@@ -35,26 +35,29 @@ class KvizListAdapter(
         override fun getItemCount(): Int = kvizovi.size
 
         override fun onBindViewHolder(holder: KvizViewHolder, position: Int) {
-            val pattern = "dd.MM.yyyy"
-            val simpleDateFormat = SimpleDateFormat(pattern)
-            val poc = simpleDateFormat.format(kvizovi[position].datumPocetka)
-            holder.textKviz.text = kvizovi[position].naziv;
-            holder.textPredmet.text = kvizovi[position].nazivPredmeta;
-            holder.textDatum.text = poc
-            holder.textBod.text = kvizovi[position].osvojeniBodovi.toString()
-            holder.textVrijeme.text = kvizovi[position].trajanje.toString()
 
             val current = Date()
             val cal = Calendar.getInstance()
             cal.time = current
 
-
             var colorMatch =""
-            if (kvizovi[position].datumPocetka>current && kvizovi[position].datumKraj>current && kvizovi[position].datumRada==null) colorMatch="zelena"
-            else if ((kvizovi[position].datumRada!=null) && kvizovi[position].datumRada!!<current) colorMatch="plava"
+            if (kvizovi[position].datumPocetka<current && kvizovi[position].datumKraj>current && kvizovi[position].datumRada==null) colorMatch="zelena"
+            else if ((kvizovi[position].datumRada!=null) && kvizovi[position].datumRada!!<=current) colorMatch="plava"
             else if (kvizovi[position].datumPocetka>current) colorMatch="zuta"
             else if (kvizovi[position].datumKraj<current && kvizovi[position].datumRada==null) colorMatch="crvena"
 
+            val pattern = "dd.MM.yyyy"
+            val simpleDateFormat = SimpleDateFormat(pattern)
+            var prikazDatuma =""
+            if (colorMatch=="zuta") prikazDatuma=simpleDateFormat.format(kvizovi[position].datumPocetka)
+            else if (colorMatch=="zelena" || colorMatch=="crvena") prikazDatuma=simpleDateFormat.format(kvizovi[position].datumKraj)
+            else if (colorMatch=="plava") prikazDatuma=simpleDateFormat.format(kvizovi[position].datumRada)
+
+            holder.textKviz.text = kvizovi[position].naziv
+            holder.textPredmet.text = kvizovi[position].nazivPredmeta
+            holder.textDatum.text = prikazDatuma
+            holder.textBod.text = kvizovi[position].osvojeniBodovi.toString()
+            holder.textVrijeme.text = kvizovi[position].trajanje.toString()
 
             //Pronalazimo id drawable elementa na osnovu datuma
             val context: Context = holder.imageDot.getContext()
