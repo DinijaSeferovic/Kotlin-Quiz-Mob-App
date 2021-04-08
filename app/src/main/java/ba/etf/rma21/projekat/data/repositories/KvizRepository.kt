@@ -13,12 +13,13 @@ class KvizRepository {
 
         fun getMyKvizes(): List<Kviz> {
             // TODO: Implementirati
-            return emptyList()
+
+            return dataKvizovi()
         }
 
         fun getAll(): List<Kviz> {
             // TODO: Implementirati
-            return dataKvizovi();
+            return dataKvizovi()
         }
 
         fun getDone(): List<Kviz> {

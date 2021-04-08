@@ -13,6 +13,11 @@ class PredmetRepository {
             // TODO: Implementirati
             return emptyList()
         }
+
+        fun getPredmetByGod(god: String): List<Predmet> {
+            // TODO: Implementirati
+            return emptyList()
+        }
         // TODO: Implementirati i ostale potrebne metode
     }
 

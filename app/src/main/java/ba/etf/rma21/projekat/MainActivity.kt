@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -13,6 +14,7 @@ import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getAll
 import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getMyKvizes
 import ba.etf.rma21.projekat.view.KvizListAdapter
 import ba.etf.rma21.projekat.viewmodel.KvizListViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private var kvizListViewModel =  KvizListViewModel()
     private lateinit var mySpinner: Spinner
     private lateinit var spinnerAdapter: ArrayAdapter<Kviz>
+    private lateinit var upisButton : FloatingActionButton
     var categories = arrayOf("Svi moji kvizovi", "Svi kvizovi", "Urađeni kvizovi", "Budući kvizovi", "Prošli kvizovi")
 
     private fun initializeViews() {
@@ -70,12 +73,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         kvizovi = findViewById(R.id.listaKvizova)
         mySpinner = findViewById(R.id.filterKvizova)
+        upisButton = findViewById(R.id.upisDugme)
         initializeViews()
         kvizovi.setLayoutManager(GridLayoutManager(this, 2))
-
-
         kvizAdapter.updateKvizovi(kvizListViewModel.getKvizovi())
 
+        upisButton.setOnClickListener{
+            upisOpen()
+        }
+    }
+
+    private fun upisOpen(){
+
+        val intent = Intent(this, UpisPredmet::class.java).apply {
+            //putExtra()
+        }
+        startActivity(intent)
     }
 }
 
