@@ -11,7 +11,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getAll
+import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getDone
+import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getFuture
 import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getMyKvizes
+import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getNotTaken
+import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.sortirajKviz
 import ba.etf.rma21.projekat.view.KvizListAdapter
 import ba.etf.rma21.projekat.viewmodel.KvizListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -46,28 +50,36 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getSelectedCategoryData(categoryID: Int) {
-        //arraylist to hold selected cosmic bodies
-        val data = ArrayList<Kviz>()
-        spinnerAdapter = if (categoryID == 1) {
-            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, getAll())
+        //list to hold selected
+        var data : List<Kviz> = listOf()
+        spinnerAdapter = if (categoryID == 0) {
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, sortirajKviz(getMyKvizes()))
 
         } else {
             //filter by id
             for (Kviz in getAll()) {
-                if (categoryID==0) {
-                    for (k in getMyKvizes()) data.add(k)
+                if (categoryID == 1) {
+                    data= sortirajKviz(getAll())
+                    spinnerAdapter.notifyDataSetChanged()
+                } else if (categoryID == 2) {
+                    data= sortirajKviz(getDone())
+                    spinnerAdapter.notifyDataSetChanged()
+                } else if (categoryID == 3) {
+                    data= sortirajKviz(getFuture())
+                    spinnerAdapter.notifyDataSetChanged()
+                } else if (categoryID == 4) {
+                    data= sortirajKviz(getNotTaken())
+                    spinnerAdapter.notifyDataSetChanged()
+
                 }
             }
             //instatiate adapter a
             ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data)
         }
-        //set the adapter to GridView
-        //kvizovi.adapter = spinnerAdapter
+
     }
 
-    /*
-    when activity is created, setContentView then initializeViews.
-     */
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
