@@ -12,6 +12,7 @@ import ba.etf.rma21.projekat.data.repositories.GrupaRepository.Companion.upisiGr
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisiPredmeti
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
+import kotlin.properties.Delegates
 
 class UpisPredmet : AppCompatActivity(){
     private lateinit var dodajButton: Button
@@ -29,13 +30,13 @@ class UpisPredmet : AppCompatActivity(){
     private var spin1: Boolean = false
     private var spin2: Boolean = false
     private var spin3: Boolean = false
-    private var defaultGodina: Int = 0
+    //private var defaultGodina by Delegates.notNull<Int>()
 
     private fun initializeViews() {
 
         spinnerAdapterGod = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, godine)
         spinnerGodina.adapter= spinnerAdapterGod
-        spinnerGodina.setSelection(defaultGodina)
+        spinnerGodina.setSelection(intent.getIntExtra("defaultGodMain",0))
 
         //spinner selection events
         spinnerGodina.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -48,7 +49,7 @@ class UpisPredmet : AppCompatActivity(){
                     spinnerAdapterPred = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_dropdown_item_1line, predmeti)
                     spinnerPredmet.adapter = spinnerAdapterPred
                     spin1=true
-                    defaultGodina=position
+                    //defaultGodina=position
                 }
                 else spin1=false
             }
@@ -115,7 +116,7 @@ class UpisPredmet : AppCompatActivity(){
     private fun dodajOpen(){
 
         val intent = Intent(this, MainActivity::class.java).apply {
-            //putExtra()
+            putExtra("defaultGod", spinnerGodina.selectedItemPosition)
         }
         startActivity(intent)
     }

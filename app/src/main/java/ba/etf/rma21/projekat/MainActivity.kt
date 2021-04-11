@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     private fun upisOpen(){
 
         val intent = Intent(this, UpisPredmet::class.java).apply {
-            //putExtra()
+            putExtra("defaultGodMain", intent.getIntExtra("defaultGod",0))
         }
         startActivity(intent)
     }
