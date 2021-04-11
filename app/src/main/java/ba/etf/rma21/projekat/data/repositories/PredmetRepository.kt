@@ -5,7 +5,7 @@ import ba.etf.rma21.projekat.data.models.Predmet
 
 class PredmetRepository {
     companion object {
-        private var upisani: List<Predmet> = listOf()
+        private var upisani= mutableListOf<Predmet>()
 
         fun getUpisani(): List<Predmet> {
 
@@ -13,9 +13,9 @@ class PredmetRepository {
         }
 
         fun upisaniString(): List<String> {
-            var predmeti: List<String> = listOf()
-            for (p in getUpisani()) {
-                predmeti.toMutableList().add(p.naziv)
+            var predmeti = mutableListOf<String>()
+            for (p in upisani) {
+                predmeti.add(p.naziv)
             }
             return predmeti
         }
@@ -25,26 +25,22 @@ class PredmetRepository {
             return dataPredmeti()
         }
 
-        fun getPredmetByGod(god: String): List<String> {
+        fun getPredmetByGod(god: String): List<Predmet> {
 
-            var predPoGod: List<String> = listOf()
+            var predPoGod = mutableListOf<Predmet>()
             for (p in getAll()) {
-                if (p.godina.toString()==god) predPoGod.toMutableList().add(p.naziv)
+                if (p.godina.toString().equals(god)) predPoGod.add(p)
             }
             return predPoGod
         }
         // TODO: Implementirati i ostale potrebne metode
-        fun upisiPredmeti(p: Predmet){
-            upisani.toMutableList().add(p)
+        fun upisiPredmeti(p: String){
+            for (pred in getAll()) {
+                if (p.equals(pred.naziv)) upisani.add(pred)
+            }
         }
 
-        fun neupisaniPoGod(god: String) : List<String> {
-            var nePredPoGod: List<String> = listOf()
-            for (s in getPredmetByGod(god)) {
-                if (!upisaniString().contains(s))  nePredPoGod.toMutableList().add(s)
-            }
-            return nePredPoGod
-        }
+
 
     }
 

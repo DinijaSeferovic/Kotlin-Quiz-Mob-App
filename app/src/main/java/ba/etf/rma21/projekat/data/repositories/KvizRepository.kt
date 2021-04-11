@@ -2,7 +2,6 @@ package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.dataKvizovi
 import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.getUpisani
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisaniString
 import java.util.*
 
@@ -16,9 +15,10 @@ class KvizRepository {
 
         fun getMyKvizes(): List<Kviz> {
 
-            var mojiKvizovi: List<Kviz> = listOf()
+            var mojiKvizovi = mutableListOf<Kviz>()
             for (k in getAll()) {
-                if (upisaniString().contains(k.nazivPredmeta)) mojiKvizovi.toMutableList().add(k)
+                if (upisaniString().any { p -> p.equals(k.nazivPredmeta) }) mojiKvizovi.add(k)
+
             }
             return mojiKvizovi
         }
@@ -30,33 +30,33 @@ class KvizRepository {
 
         fun getDone(): List<Kviz> {
 
-            var uradjeniKvizovi: List<Kviz> = listOf()
-            for (k in getAll()) {
-                if (k.datumRada!=null) uradjeniKvizovi.toMutableList().add(k)
+            var uradjeniKvizovi= mutableListOf<Kviz>()
+            for (k in getMyKvizes()) {
+                if (k.datumRada!=null) uradjeniKvizovi.add(k)
             }
             return uradjeniKvizovi
         }
 
         fun getFuture(): List<Kviz> {
 
-            var buduciKvizovi: List<Kviz> = listOf()
+            var buduciKvizovi= mutableListOf<Kviz>()
             val current = Date()
             val cal = Calendar.getInstance()
             cal.time = current
-            for (k in getAll()) {
-                if (k.datumRada==null && k.datumPocetka>current) buduciKvizovi.toMutableList().add(k)
+            for (k in getMyKvizes()) {
+                if (k.datumRada==null && k.datumPocetka>current) buduciKvizovi.add(k)
             }
             return buduciKvizovi
         }
 
         fun getNotTaken(): List<Kviz> {
 
-            var neuradjeniKvizovi: List<Kviz> = listOf()
+            var neuradjeniKvizovi= mutableListOf<Kviz>()
             val current = Date()
             val cal = Calendar.getInstance()
             cal.time = current
-            for (k in getAll()) {
-                if (k.datumRada==null && k.datumKraj<current) neuradjeniKvizovi.toMutableList().add(k)
+            for (k in getMyKvizes()) {
+                if (k.datumRada==null && k.datumKraj<current) neuradjeniKvizovi.add(k)
             }
             return neuradjeniKvizovi
         }

@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -7,61 +8,82 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import ba.etf.rma21.projekat.data.models.Grupa
-import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.data.models.Predmet
-import ba.etf.rma21.projekat.data.repositories.GrupaRepository.Companion.getGroupsByPredmet
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.getAll
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.getPredmetByGod
-import ba.etf.rma21.projekat.view.KvizListAdapter
+import ba.etf.rma21.projekat.data.repositories.GrupaRepository.Companion.upisiGrupu
+import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisiPredmeti
+import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
+import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
 
 class UpisPredmet : AppCompatActivity(){
-    private lateinit var upisButton: Button
+    private lateinit var dodajButton: Button
     private lateinit var spinnerGodina: Spinner
     private lateinit var spinnerPredmet: Spinner
     private lateinit var spinnerGrupa: Spinner
-    /*private lateinit var spinnerAdapterGod: ArrayAdapter<String>
-    private lateinit var spinnerAdapterPred: ArrayAdapter<Predmet>
-    private lateinit var spinnerAdapterGru: ArrayAdapter<Grupa>*/
+    private var predmetListViewModel =  PredmetListViewModel()
+    private var grupeListViewModel =  GrupaListViewModel()
+    private lateinit var spinnerAdapterGod: ArrayAdapter<String>
+    private lateinit var spinnerAdapterPred: ArrayAdapter<String>
+    private lateinit var spinnerAdapterGru: ArrayAdapter<String>
     var godine = arrayOf("", "1", "2", "3", "4", "5")
+    var predmeti = mutableListOf<String>("")
+    var grupe = mutableListOf<String>("")
+    var spin1: Boolean = false
+    var spin2: Boolean = false
+    var spin3: Boolean = false
+
     private fun initializeViews() {
 
-        spinnerGodina.adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, godine)
-        spinnerPredmet.adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, arrayOf("")/*getPredmetByGod(spinnerGodina.selectedItem as String*/)
-        spinnerGrupa.adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, arrayOf("")/*getGroupsByPredmet(spinnerPredmet.selectedItem as String*/)
-        //kvizAdapter = KvizListAdapter(listOf())
-        /*spinnerGodina.adapter = spinnerAdapterGod
-        spinnerPredmet.adapter = spinnerAdapterPred
-        spinnerGrupa.adapter = spinnerAdapterGru*/
+        spinnerAdapterGod = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, godine)
+        spinnerGodina.adapter= spinnerAdapterGod
+
+
         //spinner selection events
         spinnerGodina.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
-                if (position >= 0 && position < godine.size) {
-
+                predmeti = mutableListOf<String>("")
+                if (position > 0 && position < godine.size) {
+                    for (p in predmetListViewModel.neupisaniPoGod(spinnerGodina.selectedItem.toString())) {
+                        predmeti.add(p)
+                    }
+                    spinnerAdapterPred = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_dropdown_item_1line, predmeti)
+                    spinnerPredmet.adapter = spinnerAdapterPred
+                    spin1=true
                 }
+                else spin1=false
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
         spinnerPredmet.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
-                if (position >= 0 && position < getPredmetByGod(spinnerGodina.selectedItem as String).size) {
-
+                grupe = mutableListOf<String>("")
+                if (position > 0 && position < predmeti.size) {
+                    for (g in grupeListViewModel.getGrupeZaPred(spinnerPredmet.selectedItem.toString())) {
+                        grupe.add(g)
+                    }
+                    spinnerAdapterGru = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_dropdown_item_1line, grupe)
+                    spinnerGrupa.adapter = spinnerAdapterGru
+                    spin2=true
                 }
+                else spin2=false
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
         spinnerGrupa.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
-                if (position >= 0 && position < getGroupsByPredmet(spinnerPredmet.selectedItem as String).size) {
-
+                if (position > 0 && position < predmeti.size) {
+                    spin3=true
+                }
+                else spin3=false
+                if (spin1 && spin2 && spin3) {
+                    dodajButton.setEnabled(true)
+                    dodajButton.setClickable(true)
                 }
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,8 +92,30 @@ class UpisPredmet : AppCompatActivity(){
         spinnerGodina = findViewById(R.id.odabirGodina)
         spinnerPredmet = findViewById(R.id.odabirPredmet)
         spinnerGrupa = findViewById(R.id.odabirGrupa)
-        upisButton = findViewById(R.id.dodajPredmetDugme)
+        dodajButton = findViewById(R.id.dodajPredmetDugme)
+        dodajButton.setEnabled(false)
+        dodajButton.setClickable(false)
+
         initializeViews()
+
+        dodajButton.setOnClickListener{
+            if (spin1 && spin2 && spin3) {
+                dodajButton.setClickable(true)
+                dodajButton.setEnabled(true)
+                upisiPredmeti(spinnerPredmet.selectedItem.toString())
+                upisiGrupu(spinnerGrupa.selectedItem.toString())
+                dodajOpen()
+
+            }
+        }
+    }
+
+    private fun dodajOpen(){
+
+        val intent = Intent(this, MainActivity::class.java).apply {
+            //putExtra()
+        }
+        startActivity(intent)
     }
 
 }

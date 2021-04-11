@@ -46,12 +46,11 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getSelectedCategoryData(categoryID: Int) {
-        //list to hold selected
 
         spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data)
 
             //filter by id
-            for (Kviz in getAll()) {
+            //for (Kviz in getAll()) {
                 if (categoryID == 0) {
                     data= kvizListViewModel.getMojiKvizovi()
                     kvizAdapter.updateKvizovi(data)
@@ -68,10 +67,8 @@ class MainActivity : AppCompatActivity() {
                     data= kvizListViewModel.getNeodrzaniKvizovi()
                     kvizAdapter.updateKvizovi(data)
 
-                }
+                //}
 
-            //instatiate adapter a
-            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data)
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
