@@ -14,7 +14,7 @@ class PredmetListViewModel {
     fun neupisaniPoGod(god: String) : List<String> {
         var nePredPoGod = mutableListOf<String>()
         for (s in getPredmetiZaGod(god)) {
-            if (!PredmetRepository.upisaniString().contains(s))  nePredPoGod.add(s)
+            if (!PredmetRepository.upisaniStringP().contains(s))  nePredPoGod.add(s)
         }
         return nePredPoGod
     }

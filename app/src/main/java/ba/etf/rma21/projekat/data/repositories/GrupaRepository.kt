@@ -37,5 +37,13 @@ class GrupaRepository {
         fun upisaneGrupe(g: Grupa): List<Grupa> {
             return upisane
         }
+
+        fun upisaniStringG(): List<String> {
+            var grupe = mutableListOf<String>()
+            for (g in upisane) {
+                grupe.add(g.naziv)
+            }
+            return grupe
+        }
     }
 }

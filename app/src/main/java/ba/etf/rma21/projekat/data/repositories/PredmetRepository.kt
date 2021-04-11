@@ -12,7 +12,7 @@ class PredmetRepository {
             return upisani
         }
 
-        fun upisaniString(): List<String> {
+        fun upisaniStringP(): List<String> {
             var predmeti = mutableListOf<String>()
             for (p in upisani) {
                 predmeti.add(p.naziv)
@@ -39,9 +39,6 @@ class PredmetRepository {
                 if (p.equals(pred.naziv)) upisani.add(pred)
             }
         }
-
-
-
     }
 
 }

@@ -23,18 +23,19 @@ class UpisPredmet : AppCompatActivity(){
     private lateinit var spinnerAdapterGod: ArrayAdapter<String>
     private lateinit var spinnerAdapterPred: ArrayAdapter<String>
     private lateinit var spinnerAdapterGru: ArrayAdapter<String>
-    var godine = arrayOf("", "1", "2", "3", "4", "5")
-    var predmeti = mutableListOf<String>("")
-    var grupe = mutableListOf<String>("")
-    var spin1: Boolean = false
-    var spin2: Boolean = false
-    var spin3: Boolean = false
+    private var godine = arrayOf("", "1", "2", "3", "4", "5")
+    private var predmeti = mutableListOf<String>("")
+    private var grupe = mutableListOf<String>("")
+    private var spin1: Boolean = false
+    private var spin2: Boolean = false
+    private var spin3: Boolean = false
+    private var defaultGodina: Int = 0
 
     private fun initializeViews() {
 
         spinnerAdapterGod = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, godine)
         spinnerGodina.adapter= spinnerAdapterGod
-
+        spinnerGodina.setSelection(defaultGodina)
 
         //spinner selection events
         spinnerGodina.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -47,6 +48,7 @@ class UpisPredmet : AppCompatActivity(){
                     spinnerAdapterPred = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_dropdown_item_1line, predmeti)
                     spinnerPredmet.adapter = spinnerAdapterPred
                     spin1=true
+                    defaultGodina=position
                 }
                 else spin1=false
             }
@@ -105,7 +107,7 @@ class UpisPredmet : AppCompatActivity(){
                 upisiPredmeti(spinnerPredmet.selectedItem.toString())
                 upisiGrupu(spinnerGrupa.selectedItem.toString())
                 dodajOpen()
-
+                finish()
             }
         }
     }

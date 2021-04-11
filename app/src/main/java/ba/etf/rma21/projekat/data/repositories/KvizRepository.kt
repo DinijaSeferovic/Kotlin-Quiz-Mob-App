@@ -2,7 +2,8 @@ package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.dataKvizovi
 import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisaniString
+import ba.etf.rma21.projekat.data.repositories.GrupaRepository.Companion.upisaniStringG
+import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisaniStringP
 import java.util.*
 
 class KvizRepository {
@@ -17,7 +18,8 @@ class KvizRepository {
 
             var mojiKvizovi = mutableListOf<Kviz>()
             for (k in getAll()) {
-                if (upisaniString().any { p -> p.equals(k.nazivPredmeta) }) mojiKvizovi.add(k)
+                if (upisaniStringP().any { p -> p.equals(k.nazivPredmeta) }
+                        && upisaniStringG().any {  g -> g.equals(k.nazivGrupe) }) mojiKvizovi.add(k)
 
             }
             return mojiKvizovi

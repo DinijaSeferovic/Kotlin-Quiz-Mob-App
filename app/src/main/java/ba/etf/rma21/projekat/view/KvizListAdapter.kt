@@ -56,7 +56,8 @@ class KvizListAdapter(
             holder.textKviz.text = kvizovi[position].naziv
             holder.textPredmet.text = kvizovi[position].nazivPredmeta
             holder.textDatum.text = prikazDatuma
-            holder.textBod.text = kvizovi[position].osvojeniBodovi.toString()
+            if (kvizovi[position].osvojeniBodovi != null) holder.textBod.text = kvizovi[position].osvojeniBodovi.toString()
+            else holder.textBod.text= ""
             holder.textVrijeme.text = kvizovi[position].trajanje.toString()
 
             //Pronalazimo id drawable elementa na osnovu datuma
