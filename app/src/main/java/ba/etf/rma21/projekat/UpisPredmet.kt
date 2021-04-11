@@ -12,7 +12,6 @@ import ba.etf.rma21.projekat.data.repositories.GrupaRepository.Companion.upisiGr
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisiPredmeti
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
-import kotlin.properties.Delegates
 
 class UpisPredmet : AppCompatActivity(){
     private lateinit var dodajButton: Button
@@ -30,7 +29,6 @@ class UpisPredmet : AppCompatActivity(){
     private var spin1: Boolean = false
     private var spin2: Boolean = false
     private var spin3: Boolean = false
-    //private var defaultGodina by Delegates.notNull<Int>()
 
     private fun initializeViews() {
 

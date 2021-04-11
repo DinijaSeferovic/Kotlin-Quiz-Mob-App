@@ -1,9 +1,7 @@
 package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.data.dataGrupe
-import ba.etf.rma21.projekat.data.dataPredmeti
 import ba.etf.rma21.projekat.data.models.Grupa
-import ba.etf.rma21.projekat.data.models.Predmet
 
 class GrupaRepository {
 
