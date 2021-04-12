@@ -15,7 +15,7 @@ class FiltriranjeTest {
     @Test
     fun testGetAllKvizes(){
         val kvizovi = KvizRepository.getAll()
-        assertEquals(kvizovi.size,8)
+        assertEquals(8, kvizovi.size)
         assertThat(kvizovi, hasItem<Kviz>(hasProperty("nazivPredmeta", Is("AFJ"))))
         assertThat(kvizovi, not(hasItem<Kviz>(hasProperty("naziv", Is("Kviz 10")))))
     }
@@ -24,7 +24,7 @@ class FiltriranjeTest {
     fun testGetAllMyKvizes(){
         var kvizListViewModel =  KvizListViewModel()
         val myKvizovi = kvizListViewModel.getMojiKvizovi()
-        assertEquals(myKvizovi.size,0)
+        assertEquals(0, myKvizovi.size)
         assertThat(myKvizovi, not(hasItem<Kviz>(hasProperty("nazivPredmeta", Is("RMA")))))
         assertThat(myKvizovi, not(hasItem<Kviz>(hasProperty("trajanje", Is(0)))))
     }
@@ -33,7 +33,7 @@ class FiltriranjeTest {
     fun testGetBuduciKvizes(){
         var kvizListViewModel =  KvizListViewModel()
         val myKvizovi = kvizListViewModel.getMojiKvizovi()
-        assertEquals(myKvizovi.size,0)
+        assertEquals(0, myKvizovi.size)
         assertThat(myKvizovi, not(hasItem<Kviz>(hasProperty("nazivPredmeta", Is("IM")))))
         assertThat(myKvizovi, not(hasItem<Kviz>(hasProperty("osvojeniBodovi", Is(5)))))
     }
@@ -41,14 +41,14 @@ class FiltriranjeTest {
     @Test
     fun testGetNeodrzaniAllKvizes(){
         val myKvizovi = KvizRepository.getAll().filter { k -> k.datumRada!=null }
-        assertEquals(myKvizovi.size,4)
+        assertEquals(4, myKvizovi.size)
         assertThat(myKvizovi, (hasItem<Kviz>(hasProperty("nazivPredmeta", Is("IM")))))
     }
 
     @Test
     fun testGetZavrseniKvizes(){
         val myKvizovi = KvizRepository.getDone()
-        assertEquals(myKvizovi.size,0)
+        assertEquals(0, myKvizovi.size)
         assertThat(myKvizovi, not(hasItem<Kviz>(hasProperty("nazivPredmeta", Is("IM")))))
     }
 
@@ -56,7 +56,7 @@ class FiltriranjeTest {
     fun testGetProsliKvizes(){
         var kvizListViewModel =  KvizListViewModel()
         val myKvizovi = kvizListViewModel.getMojiKvizovi()
-        assertEquals(myKvizovi.size,0)
+        assertEquals(0, myKvizovi.size)
     }
 
 

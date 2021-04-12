@@ -32,7 +32,7 @@ class GrupaRepository {
             }
         }
 
-        fun upisaneGrupe(g: Grupa): List<Grupa> {
+        fun getUpisane(): List<Grupa> {
             return upisane
         }
 
