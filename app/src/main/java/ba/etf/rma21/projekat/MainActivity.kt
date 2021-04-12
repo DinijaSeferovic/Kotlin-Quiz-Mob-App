@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.view.KvizListAdapter
+import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.KvizListViewModel
+import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var kvizovi: RecyclerView
     private lateinit var kvizAdapter: KvizListAdapter
     private var kvizListViewModel =  KvizListViewModel()
+    private var predmetListViewModel =  PredmetListViewModel()
+    private var grupaListViewModel =  GrupaListViewModel()
     private lateinit var mySpinner: Spinner
     private lateinit var spinnerAdapter: ArrayAdapter<Kviz>
     private lateinit var upisButton : FloatingActionButton
@@ -76,8 +80,11 @@ class MainActivity : AppCompatActivity() {
         kvizovi = findViewById(R.id.listaKvizova)
         mySpinner = findViewById(R.id.filterKvizova)
         upisButton = findViewById(R.id.upisDugme)
+
         initializeViews()
         kvizovi.setLayoutManager(GridLayoutManager(this, 2))
+        predmetListViewModel.dodajPocetniUpisaniP()
+        grupaListViewModel.dodajPocetnuUpisanuG()
         kvizAdapter.updateKvizovi(kvizListViewModel.getKvizovi())
 
         upisButton.setOnClickListener{

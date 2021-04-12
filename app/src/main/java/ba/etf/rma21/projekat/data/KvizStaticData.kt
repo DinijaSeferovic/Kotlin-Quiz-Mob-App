@@ -15,12 +15,21 @@ fun dataKvizovi(): List<Kviz> {
             Kviz( "Kviz 2","DM",
                     Date(121,4,20),Date(121,6,5),
                     null,2,"UTO",null),
+            Kviz( "Kviz 6","DM",
+                    Date(121,5,11),Date(121,7,15),
+                    null,2,"PON",null),
             Kviz( "Kviz 3","IM",
                     Date(121,2,22),Date(121,6,2),
                     null,3,"PON",null),
+            Kviz( "Kviz 7","IM",
+                    Date(121,3,28),Date(121,6,2),
+                    Date(121,4,12),3,"PET",5F),
             Kviz( "Kviz 4","AFJ",
                     Date(121,3,3),Date(121,5,20),
                     Date(121,3,5),2,"SRI",4F),
+            Kviz( "Kviz 8","AFJ",
+                    Date(121,4,30),Date(121,6,20),
+                    Date(121,5,5),2,"CET",4F),
             Kviz( "Kviz 5","RMA",
                     Date(121,2,20),Date(121,3,20),
                     Date(121,3,1),2,"PET",1F)
@@ -28,21 +37,30 @@ fun dataKvizovi(): List<Kviz> {
     )
 }
 
+/*Podaci pri pokretanju aplikacije moraju uključivati bar 3 predmeta na kojim korisnik nije upisan
+sa minimalno po 2 grupe i 1 kviz po grupi,
+i bar jedan predmet sa bar jednim kvizom na kojem je  korisnik upisan.
+ */
+
+
 fun dataGrupe(): List<Grupa> {
     return listOf(
             Grupa( "PON", "RMA"),
             Grupa("PET", "RMA"),
             Grupa("SRI", "AFJ"),
+            Grupa("CET", "AFJ"),
+            Grupa("PON", "DM"),
             Grupa("UTO", "DM"),
             Grupa("PON", "IM"),
             Grupa("PET", "IM"),
             Grupa("UTO", "IM"),
-            Grupa("PET", "ASP"),
+            Grupa("CET", "IM"),
             Grupa("SRI", "ASP"),
+            Grupa("PET", "ASP"),
             Grupa("SRI", "TP"),
             Grupa("CET", "TP"),
-            Grupa("CET", "OBP"),
             Grupa("SRI", "OBP"),
+            Grupa("CET", "OBP"),
             Grupa("PON", "OR"),
             Grupa("UTO", "OR")
 

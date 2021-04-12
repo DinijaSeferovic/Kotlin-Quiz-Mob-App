@@ -5,7 +5,7 @@ import ba.etf.rma21.projekat.data.repositories.PredmetRepository
 class PredmetListViewModel {
     fun getPredmetiZaGod(god: String): List<String> {
 
-        var predPoGod: List<String> = PredmetRepository.getPredmetByGod(god).map {it.naziv }.toList()
+        var predPoGod: List<String> = PredmetRepository.getPredmetsByGodina(god).map {it.naziv }.toList()
 
         return predPoGod
     }
@@ -16,5 +16,9 @@ class PredmetListViewModel {
             if (!PredmetRepository.upisaniStringP().contains(s))  nePredPoGod.add(s)
         }
         return nePredPoGod
+    }
+
+    fun dodajPocetniUpisaniP() {
+        PredmetRepository.upisiPredmeti("RMA")
     }
 }

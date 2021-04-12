@@ -25,7 +25,7 @@ class PredmetRepository {
             return dataPredmeti()
         }
 
-        fun getPredmetByGod(god: String): List<Predmet> {
+        fun getPredmetsByGodina(god: String): List<Predmet> {
 
             var predPoGod = mutableListOf<Predmet>()
             for (p in getAll()) {
@@ -33,12 +33,14 @@ class PredmetRepository {
             }
             return predPoGod
         }
-        // TODO: Implementirati i ostale potrebne metode
+
         fun upisiPredmeti(p: String){
             for (pred in getAll()) {
                 if (p.equals(pred.naziv)) upisani.add(pred)
             }
         }
+
+
     }
 
 }
