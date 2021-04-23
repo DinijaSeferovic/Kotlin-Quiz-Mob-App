@@ -1,19 +1,23 @@
-package ba.etf.rma21.projekat
+package ba.etf.rma21.projekat.view
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
-import androidx.appcompat.app.AppCompatActivity
-import ba.etf.rma21.projekat.data.repositories.GrupaRepository.Companion.upisiGrupu
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisiPredmeti
+import androidx.fragment.app.Fragment
+import ba.etf.rma21.projekat.MainActivity
+import ba.etf.rma21.projekat.R
+import ba.etf.rma21.projekat.data.repositories.GrupaRepository
+import ba.etf.rma21.projekat.data.repositories.PredmetRepository
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
 
-class UpisPredmet : AppCompatActivity(){
+
+class FragmentPredmeti : Fragment() {
     private lateinit var dodajButton: Button
     private lateinit var spinnerGodina: Spinner
     private lateinit var spinnerPredmet: Spinner
@@ -30,24 +34,29 @@ class UpisPredmet : AppCompatActivity(){
     private var spin2: Boolean = false
     private var spin3: Boolean = false
 
-    private fun initializeViews() {
 
-        spinnerAdapterGod = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, godine)
+    private fun initializeViews(inflater: LayoutInflater) {
+
+        spinnerAdapterGod = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, godine)
         spinnerGodina.adapter= spinnerAdapterGod
-        spinnerGodina.setSelection(intent.getIntExtra("defaultGodMain",0))
+        spinnerGodina.setSelection(MainActivity.odabranaGod)
+
 
         //spinner selection events
         spinnerGodina.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
                 predmeti = mutableListOf<String>("")
+
                 if (position > 0 && position < godine.size) {
                     for (p in predmetListViewModel.neupisaniPoGod(spinnerGodina.selectedItem.toString())) {
                         predmeti.add(p)
+
                     }
-                    spinnerAdapterPred = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_dropdown_item_1line, predmeti)
+                    spinnerAdapterPred = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, predmeti)
                     spinnerPredmet.adapter = spinnerAdapterPred
+                    spinnerPredmet.setSelection(MainActivity.odabraniPred)
                     spin1=true
-                    //defaultGodina=position
+                    MainActivity.odabranaGod=position
                 }
                 else spin1=false
             }
@@ -57,21 +66,27 @@ class UpisPredmet : AppCompatActivity(){
         spinnerPredmet.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
                 grupe = mutableListOf<String>("")
+
                 if (position > 0 && position < predmeti.size) {
                     for (g in grupeListViewModel.getGrupeZaPred(spinnerPredmet.selectedItem.toString())) {
                         grupe.add(g)
                     }
-                    spinnerAdapterGru = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_dropdown_item_1line, grupe)
+                    spinnerAdapterGru = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, grupe)
                     spinnerGrupa.adapter = spinnerAdapterGru
+                    spinnerGrupa.setSelection(MainActivity.odabranaGru)
                     spin2=true
+                    MainActivity.odabraniPred=position
+
                 }
                 else spin2=false
+
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
         spinnerGrupa.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
+                MainActivity.odabranaGru=position
                 if (position > 0 && position < predmeti.size) {
                     spin3=true
                 }
@@ -81,42 +96,57 @@ class UpisPredmet : AppCompatActivity(){
                     dodajButton.setClickable(true)
                 }
             }
-
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.upis_activity)
-        spinnerGodina = findViewById(R.id.odabirGodina)
-        spinnerPredmet = findViewById(R.id.odabirPredmet)
-        spinnerGrupa = findViewById(R.id.odabirGrupa)
-        dodajButton = findViewById(R.id.dodajPredmetDugme)
+    private fun dodajOpen(porukaFragment: FragmentPoruka){
+
+        val transaction = fragmentManager?.beginTransaction()
+        transaction?.replace(R.id.container, porukaFragment)
+        transaction?.addToBackStack(null)
+        transaction?.commit()
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        var view =  inflater.inflate(R.layout.predmeti_fragment, container, false)
+
+        spinnerGodina = view.findViewById(R.id.odabirGodina)
+        spinnerPredmet = view.findViewById(R.id.odabirPredmet)
+        spinnerGrupa = view.findViewById(R.id.odabirGrupa)
+        dodajButton = view.findViewById(R.id.dodajPredmetDugme)
         dodajButton.setEnabled(false)
         dodajButton.setClickable(false)
 
-        initializeViews()
+
+        initializeViews(inflater)
 
         dodajButton.setOnClickListener{
+            val porukaFragment = FragmentPoruka.newInstance()
             if (spin1 && spin2 && spin3) {
                 dodajButton.setClickable(true)
                 dodajButton.setEnabled(true)
-                upisiPredmeti(spinnerPredmet.selectedItem.toString())
-                upisiGrupu(spinnerGrupa.selectedItem.toString())
-                //dodajOpen()
-                finish()
+                PredmetRepository.upisiPredmeti(spinnerPredmet.selectedItem.toString())
+                GrupaRepository.upisiGrupu(spinnerGrupa.selectedItem.toString())
+                MainActivity.odabranaGod=0
+                MainActivity.odabraniPred=0
+                MainActivity.odabranaGru=0
+
             }
+            var bundle: Bundle = Bundle()
+            bundle.putString("posGru", spinnerGrupa.selectedItem.toString())
+            bundle.putString("posPred", spinnerPredmet.selectedItem.toString())
+            porukaFragment.setArguments(bundle)
+            dodajOpen(porukaFragment)
         }
+        return view
     }
 
-    /*private fun dodajOpen(){
 
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("defaultGod", spinnerGodina.selectedItemPosition)
-        }
-        startActivity(intent)
-    }*/
 
+    companion object {
+        fun newInstance(): FragmentPredmeti = FragmentPredmeti()
+    }
 }

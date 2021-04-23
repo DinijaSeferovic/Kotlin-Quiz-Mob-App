@@ -1,83 +1,39 @@
 package ba.etf.rma21.projekat
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.view.KvizListAdapter
-import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
-import ba.etf.rma21.projekat.viewmodel.KvizListViewModel
-import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.fragment.app.Fragment
+import ba.etf.rma21.projekat.view.FragmentKvizovi
+import ba.etf.rma21.projekat.view.FragmentPredmeti
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var bottomNavigation: BottomNavigationView
 
-    private lateinit var kvizovi: RecyclerView
-    private lateinit var kvizAdapter: KvizListAdapter
-    private var kvizListViewModel =  KvizListViewModel()
-    private var predmetListViewModel =  PredmetListViewModel()
-    private var grupaListViewModel =  GrupaListViewModel()
-    private lateinit var mySpinner: Spinner
-    private lateinit var spinnerAdapter: ArrayAdapter<Kviz>
-    private lateinit var upisButton : FloatingActionButton
-    var categories = arrayOf("Svi moji kvizovi", "Svi kvizovi", "Urađeni kvizovi", "Budući kvizovi", "Prošli kvizovi")
-    var data : List<Kviz> = emptyList()
-
-    private fun initializeViews() {
-
-        mySpinner.adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)
-        kvizAdapter = KvizListAdapter(data)
-        kvizovi.adapter = kvizAdapter
-        //spinner selection events
-        mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
-                if (position >= 0 && position < categories.size) {
-                    getSelectedCategoryData(position)
-                }
+    //Listener za click
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.kvizovi -> {
+                val kvizoviFragment = FragmentKvizovi.newInstance()
+                openFragment(kvizoviFragment)
+                return@OnNavigationItemSelectedListener true
             }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+            R.id.predmeti -> {
+                val predmetiFragment = FragmentPredmeti.newInstance()
+                openFragment(predmetiFragment)
+                return@OnNavigationItemSelectedListener true
+            }
         }
+        false
     }
 
 
-    private fun getSelectedCategoryData(categoryID: Int) {
 
-        spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data)
-
-            //filter by id
-            //for (Kviz in getAll()) {
-                if (categoryID == 0) {
-                    data= kvizListViewModel.getMojiKvizovi()
-                    kvizAdapter.updateKvizovi(data)
-                } else if (categoryID == 1) {
-                    data= kvizListViewModel.getKvizovi()
-                    kvizAdapter.updateKvizovi(data)
-                } else if (categoryID == 2) {
-                    data= kvizListViewModel.getGotoviKvizovi()
-                    kvizAdapter.updateKvizovi(data)
-                } else if (categoryID == 3) {
-                    data= kvizListViewModel.getBuduciKvizovi()
-                    kvizAdapter.updateKvizovi(data)
-                } else if (categoryID == 4) {
-                    data= kvizListViewModel.getNeodrzaniKvizovi()
-                    kvizAdapter.updateKvizovi(data)
-
-                //}
-
-        }
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        kvizovi = findViewById(R.id.listaKvizova)
+        /*kvizovi = findViewById(R.id.listaKvizova)
         mySpinner = findViewById(R.id.filterKvizova)
         upisButton = findViewById(R.id.upisDugme)
 
@@ -90,15 +46,33 @@ class MainActivity : AppCompatActivity() {
         upisButton.setOnClickListener{
             upisOpen()
         }
+        */
+
+
+        bottomNavigation= findViewById(R.id.bottomNav)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        bottomNavigation.selectedItemId= R.id.kvizovi
     }
 
-    private fun upisOpen(){
 
-        val intent = Intent(this, UpisPredmet::class.java).apply {
-            putExtra("defaultGodMain", intent.getIntExtra("defaultGod",0))
-        }
-        startActivity(intent)
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
+
+    override fun onBackPressed() {
+        bottomNavigation.setSelectedItemId(R.id.kvizovi)
+
+    }
+
+    companion object {
+        var odabranaGod:Int = 0
+         var odabraniPred:Int=0
+         var odabranaGru:Int = 0
+    }
+
 }
 
 
