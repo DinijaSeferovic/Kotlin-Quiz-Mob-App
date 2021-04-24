@@ -10,6 +10,7 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
@@ -31,7 +32,7 @@ class FragmentKvizovi : Fragment() {
     private fun initializeViews(inflater: LayoutInflater) {
 
         mySpinner.adapter = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, categories)
-        kvizAdapter = KvizListAdapter(data)
+        kvizAdapter = KvizListAdapter(data) { kviz -> showKviz(kviz) }
         kvizovi.adapter = kvizAdapter
         //spinner selection events
         mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -75,6 +76,7 @@ class FragmentKvizovi : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view =  inflater.inflate(R.layout.kvizovi_fragment, container, false)
+        (activity as MainActivity).switchNavigation("main")
         kvizovi = view.findViewById(R.id.listaKvizova)
         mySpinner = view.findViewById(R.id.filterKvizova)
 
@@ -94,7 +96,15 @@ class FragmentKvizovi : Fragment() {
         }
         startActivity(intent)
     }
-*/
+    */
+    private fun showKviz(kviz: Kviz) {
+        val pokusajFragment = FragmentPokusaj.newInstance()
+        val transaction = fragmentManager?.beginTransaction()
+        transaction?.replace(R.id.container, pokusajFragment)
+        transaction?.addToBackStack(null)
+        transaction?.commit()
+    }
+
     companion object {
         fun newInstance(): FragmentKvizovi = FragmentKvizovi()
     }

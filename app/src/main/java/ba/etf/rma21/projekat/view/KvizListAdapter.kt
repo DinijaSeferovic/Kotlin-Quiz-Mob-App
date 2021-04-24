@@ -13,8 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class KvizListAdapter(
-        private var kvizovi: List<Kviz>
-    ) : RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
+        private var kvizovi: List<Kviz>,
+        private val onItemClicked: (movie:Kviz) -> Unit): RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
 
         inner class KvizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val imageDot: ImageView = itemView.findViewById(R.id.imageDot)
@@ -57,6 +57,8 @@ class KvizListAdapter(
             if (kvizovi[position].osvojeniBodovi != null) holder.textBod.text = kvizovi[position].osvojeniBodovi.toString()
             else holder.textBod.text= ""
             holder.textVrijeme.text = kvizovi[position].trajanje.toString()
+            holder.itemView.setOnClickListener{ onItemClicked(kvizovi[position]) }
+
 
             //Pronalazimo id drawable elementa na osnovu datuma
             val context: Context = holder.imageDot.getContext()

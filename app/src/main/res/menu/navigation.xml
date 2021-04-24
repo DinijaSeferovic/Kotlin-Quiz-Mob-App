@@ -8,5 +8,13 @@
         android:id="@+id/predmeti"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="Predmeti" />
+    <item
+        android:id="@+id/predajKviz"
+        android:icon="@android:drawable/ic_menu_set_as"
+        android:title="Predaj" />
+    <item
+        android:id="@+id/zaustaviKviz"
+        android:icon="@android:drawable/ic_media_pause"
+        android:title="Zaustavi" />
 
 </menu>

@@ -15,6 +15,7 @@ import ba.etf.rma21.projekat.data.repositories.GrupaRepository
 import ba.etf.rma21.projekat.data.repositories.PredmetRepository
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
+import ba.etf.rma21.projekat.viewmodel.SaveStateViewModel
 
 
 class FragmentPredmeti : Fragment() {
@@ -39,7 +40,7 @@ class FragmentPredmeti : Fragment() {
 
         spinnerAdapterGod = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, godine)
         spinnerGodina.adapter= spinnerAdapterGod
-        spinnerGodina.setSelection(MainActivity.odabranaGod)
+        spinnerGodina.setSelection(MainActivity.viewModel.getGod())
 
 
         //spinner selection events
@@ -54,9 +55,9 @@ class FragmentPredmeti : Fragment() {
                     }
                     spinnerAdapterPred = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, predmeti)
                     spinnerPredmet.adapter = spinnerAdapterPred
-                    spinnerPredmet.setSelection(MainActivity.odabraniPred)
+                    spinnerPredmet.setSelection(MainActivity.viewModel.getPred())
                     spin1=true
-                    MainActivity.odabranaGod=position
+                    MainActivity.viewModel.setGod(position)
                 }
                 else spin1=false
             }
@@ -73,9 +74,9 @@ class FragmentPredmeti : Fragment() {
                     }
                     spinnerAdapterGru = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, grupe)
                     spinnerGrupa.adapter = spinnerAdapterGru
-                    spinnerGrupa.setSelection(MainActivity.odabranaGru)
+                    spinnerGrupa.setSelection(MainActivity.viewModel.getGru())
                     spin2=true
-                    MainActivity.odabraniPred=position
+                    MainActivity.viewModel.setPred(position)
 
                 }
                 else spin2=false
@@ -86,7 +87,7 @@ class FragmentPredmeti : Fragment() {
         }
         spinnerGrupa.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
-                MainActivity.odabranaGru=position
+                MainActivity.viewModel.setGru(position)
                 if (position > 0 && position < predmeti.size) {
                     spin3=true
                 }
@@ -112,7 +113,7 @@ class FragmentPredmeti : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view =  inflater.inflate(R.layout.predmeti_fragment, container, false)
-
+        (activity as MainActivity).switchNavigation("main")
         spinnerGodina = view.findViewById(R.id.odabirGodina)
         spinnerPredmet = view.findViewById(R.id.odabirPredmet)
         spinnerGrupa = view.findViewById(R.id.odabirGrupa)
@@ -130,9 +131,9 @@ class FragmentPredmeti : Fragment() {
                 dodajButton.setEnabled(true)
                 PredmetRepository.upisiPredmeti(spinnerPredmet.selectedItem.toString())
                 GrupaRepository.upisiGrupu(spinnerGrupa.selectedItem.toString())
-                MainActivity.odabranaGod=0
-                MainActivity.odabraniPred=0
-                MainActivity.odabranaGru=0
+                MainActivity.viewModel.setGru(0)
+                MainActivity.viewModel.setGod(0)
+                MainActivity.viewModel.setPred(0)
 
             }
             var bundle: Bundle = Bundle()

@@ -5,12 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.view.FragmentKvizovi
 import ba.etf.rma21.projekat.view.FragmentPredmeti
+import ba.etf.rma21.projekat.viewmodel.SaveStateViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigation: BottomNavigationView
-
     //Listener za click
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation= findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.selectedItemId= R.id.kvizovi
+        switchNavigation("main")
     }
 
 
@@ -68,10 +69,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        var odabranaGod:Int = 0
-         var odabraniPred:Int=0
-         var odabranaGru:Int = 0
+        var viewModel: SaveStateViewModel = SaveStateViewModel()
     }
+
+    public fun switchNavigation(view: String) {
+        if (view.equals("main")) {
+            bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
+            bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = false
+            bottomNavigation.menu.findItem(R.id.kvizovi).isVisible = true
+            bottomNavigation.menu.findItem(R.id.predmeti).isVisible = true
+        }
+        if (view.equals("pokusaj")) {
+            bottomNavigation.menu.findItem(R.id.kvizovi).isVisible = false
+            bottomNavigation.menu.findItem(R.id.predmeti).isVisible = false
+            bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = true
+            bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = true
+        }
+    }
+
+
 
 }
 
