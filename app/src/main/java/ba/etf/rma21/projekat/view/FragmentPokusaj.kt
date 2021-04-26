@@ -18,32 +18,29 @@ import ba.etf.rma21.projekat.viewmodel.PitanjeKvizViewModel
 import ba.etf.rma21.projekat.viewmodel.SendDataViewModel
 import com.google.android.material.navigation.NavigationView
 
-class FragmentPokusaj : Fragment(){
+class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
     private var kvizPitanjeViewModel =  PitanjeKvizViewModel()
     private lateinit var sideNavigation: NavigationView
-    private var pitanja = listOf<Pitanje>()
+    //private var pitanja = listOf<Pitanje>()
     var spannable = SpannableString("")
     private lateinit var viewModel: SendDataViewModel
 
+
     //Listener za click
     private val mOnNavigationItemSelectedListener = NavigationView.OnNavigationItemSelectedListener { item ->
-        var redniBr: Int =0
-        for (p: Pitanje in pitanja) {
-            if (item.itemId.equals(redniBr)) {
-                val pitanjeFragment = FragmentPitanje.newInstance()
-                openFragment(pitanjeFragment)
-                redniBr++;
-                viewModel.sendDataPitanje(pitanja[redniBr])
-                return@OnNavigationItemSelectedListener true
-            }
 
-        }
-        false
+        val pitanjeFragment = FragmentPitanje.newInstance()
+        openFragment(pitanjeFragment)
+        viewModel.sendDataPitanje(pitanja[item.order])
+        return@OnNavigationItemSelectedListener true
+
     }
+
+
 
     private fun openFragment(fragment: Fragment) {
         val transaction = fragmentManager?.beginTransaction()
-        transaction?.replace(R.id.container, fragment)
+        transaction?.replace(R.id.framePitanje, fragment)
         transaction?.addToBackStack(null)
         transaction?.commit()
     }
@@ -58,6 +55,7 @@ class FragmentPokusaj : Fragment(){
         /*viewModel.dataKviz.observe(viewLifecycleOwner, Observer {
         })*/
         pitanja= kvizPitanjeViewModel.getPitanja(viewModel.dataKviz.value!!.naziv,viewModel.dataKviz.value!!.nazivPredmeta)
+
         return view
     }
 
@@ -70,7 +68,14 @@ class FragmentPokusaj : Fragment(){
             s.setSpan(BackgroundColorSpan(Color.BLACK),0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             s.setSpan(ForegroundColorSpan(Color.WHITE),0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             sideNavigation.menu.getItem(item).setTitle(s)
+
+            sideNavigation.menu.getItem(0).setChecked(true)
+            val pitanjeFragment = FragmentPitanje.newInstance()
+            openFragment(pitanjeFragment)
+            viewModel.sendDataPitanje(pitanja[0])
+
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -79,6 +84,7 @@ class FragmentPokusaj : Fragment(){
 
     }
     companion object {
-        fun newInstance(): FragmentPokusaj = FragmentPokusaj()
+        private var pitanja = listOf<Pitanje>()
+        fun newInstance(): FragmentPokusaj = FragmentPokusaj(pitanja)
     }
 }

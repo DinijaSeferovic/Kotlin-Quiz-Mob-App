@@ -81,15 +81,15 @@ fun dataPredmeti(): List<Predmet> {
 fun dataPitanja(): List<Pitanje> {
     return listOf(
             Pitanje("p1","Koji je tačan odgovor?", listOf("a","b","c"),1),
-            Pitanje("p2","Koji je tačan odgovor?", listOf("a","b","c"),2),
-            Pitanje("p3","Koji je tačan odgovor?", listOf("a","b","c"),0),
-            Pitanje("p4","Koji je tačan odgovor?", listOf("a","b","c"),1),
+            Pitanje("p2","Koji je tačan odgovor ovdje?", listOf("a","b","c"),2),
+            Pitanje("p3","Koji je tačan odgovor?", listOf("tacno","netacno","netacno"),0),
+            Pitanje("p4","Koji je tačan rezultat?", listOf("1","2","3"),1),
             Pitanje("p5","Koji je tačan odgovor?", listOf("a","b","c"),2),
-            Pitanje("p6","Koji je tačan odgovor?", listOf("a","b","c"),2),
-            Pitanje("p7","Koji je tačan odgovor?", listOf("a","b","c"),0),
-            Pitanje("p8","Koji je tačan odgovor?", listOf("a","b","c"),1),
-            Pitanje("p9","Koji je tačan odgovor?", listOf("a","b","c"),2),
-            Pitanje("p10","Koji je tačan odgovor?", listOf("a","b","c"),1),
+            Pitanje("p6","Koji je tačan odgovor?", listOf("1","2","3"),2),
+            Pitanje("p7","Koji je tačan rezultat?", listOf("a","b","c"),0),
+            Pitanje("p8","Koji je tačan odgovor?", listOf("netacno","tacno","netacno"),1),
+            Pitanje("p9","Koji je tačan odgovor?", listOf("abc","bca","cab"),2),
+            Pitanje("p10","Koji je tačan odgovor ovdje?", listOf("a","b","c"),1),
             Pitanje("p11","Koji je tačan odgovor?", listOf("a","b","c"),1)
 
     )

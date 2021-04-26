@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var viewModel: SaveStateViewModel = SaveStateViewModel()
+        var saveViewModel: SaveStateViewModel = SaveStateViewModel()
     }
 
     fun switchNavigation(trenutniView: String) {

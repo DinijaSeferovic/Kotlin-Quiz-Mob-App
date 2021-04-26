@@ -17,4 +17,6 @@ class SendDataViewModel : ViewModel() {
         dataPitanje.value = pitanje
     }
 
+
+
 }
