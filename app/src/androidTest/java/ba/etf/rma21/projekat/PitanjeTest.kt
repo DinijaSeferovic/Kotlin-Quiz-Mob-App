@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 class PitanjeTest {
     @get:Rule
     val intentsTestRule = IntentsTestRule<MainActivity>(MainActivity::class.java)
-/*
+
     @Test
     fun ucitajuSePitanja() {
         onView(withId(R.id.filterKvizova)).perform(click())
@@ -39,7 +39,7 @@ class PitanjeTest {
             onView(withId(R.id.tekstPitanja)).check(matches(withText(pitanja[indeks].tekst)))
             indeks++
         }
-    }*/
+    }
 /*
     @Test
     fun testPredajKviz() {

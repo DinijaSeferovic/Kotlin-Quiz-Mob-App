@@ -30,7 +30,7 @@ class FragmentPitanje : Fragment(){
         var view =  inflater.inflate(R.layout.pokusaj_fragment, container, false)
         (activity as MainActivity).switchNavigation("pokusaj")
 
-        textPitanja= view!!.findViewById(R.id.textPitanja)
+        textPitanja= view!!.findViewById(R.id.tekstPitanja)
         odgovoriLista= view!!.findViewById(R.id.odgovoriLista)
 
         viewModel = ViewModelProvider(requireActivity()).get(SendDataViewModel::class.java)
@@ -47,7 +47,6 @@ class FragmentPitanje : Fragment(){
         if (mapaOdgovora.contains(pitanje)) {
             odgovoriLista.setItemChecked(saveViewModel.getDataOdgovor().get(pitanje)!!, true)
             odgovoriLista.setSelection(saveViewModel.getDataOdgovor().get(pitanje)!!)
-
         }
 
         odgovoriLista.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
@@ -61,7 +60,7 @@ class FragmentPitanje : Fragment(){
                 odgovoriLista.get(pitanje.tacan).setBackgroundColor(Color.parseColor("#3DDC84"))
             }
             odgovoriLista.setEnabled(false)
-            mapaOdgovora.put(pitanje, position)
+            if (!mapaOdgovora.containsKey(pitanje)) mapaOdgovora.put(pitanje, position)
             saveViewModel.saveDataOdgovor(mapaOdgovora)
 
         }
