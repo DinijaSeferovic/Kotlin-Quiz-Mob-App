@@ -63,6 +63,7 @@ class FragmentPitanje : Fragment(){
             odgovoriLista.setEnabled(false)
             mapaOdgovora.put(pitanje, position)
             saveViewModel.saveDataOdgovor(mapaOdgovora)
+
         }
 
 
