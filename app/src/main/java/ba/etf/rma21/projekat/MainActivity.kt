@@ -3,14 +3,18 @@ package ba.etf.rma21.projekat
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import ba.etf.rma21.projekat.view.FragmentKvizovi
+import ba.etf.rma21.projekat.view.FragmentPokusaj
 import ba.etf.rma21.projekat.view.FragmentPredmeti
 import ba.etf.rma21.projekat.viewmodel.SaveStateViewModel
+import ba.etf.rma21.projekat.viewmodel.SendDataViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigation: BottomNavigationView
+
     //Listener za click
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -48,11 +52,11 @@ class MainActivity : AppCompatActivity() {
         }
         */
 
-
         bottomNavigation= findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.selectedItemId= R.id.kvizovi
         switchNavigation("main")
+
     }
 
 
@@ -72,22 +76,20 @@ class MainActivity : AppCompatActivity() {
         var viewModel: SaveStateViewModel = SaveStateViewModel()
     }
 
-    public fun switchNavigation(view: String) {
-        if (view.equals("main")) {
+    fun switchNavigation(trenutniView: String) {
+        if (trenutniView.equals("main")) {
             bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = false
             bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = false
             bottomNavigation.menu.findItem(R.id.kvizovi).isVisible = true
             bottomNavigation.menu.findItem(R.id.predmeti).isVisible = true
         }
-        if (view.equals("pokusaj")) {
+        if (trenutniView.equals("pokusaj")) {
             bottomNavigation.menu.findItem(R.id.kvizovi).isVisible = false
             bottomNavigation.menu.findItem(R.id.predmeti).isVisible = false
             bottomNavigation.menu.findItem(R.id.predajKviz).isVisible = true
             bottomNavigation.menu.findItem(R.id.zaustaviKviz).isVisible = true
         }
     }
-
-
 
 }
 

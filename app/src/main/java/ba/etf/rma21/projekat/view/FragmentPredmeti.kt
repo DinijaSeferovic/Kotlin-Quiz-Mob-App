@@ -145,8 +145,6 @@ class FragmentPredmeti : Fragment() {
         return view
     }
 
-
-
     companion object {
         fun newInstance(): FragmentPredmeti = FragmentPredmeti()
     }

@@ -8,11 +8,11 @@ class GrupaRepository {
     companion object {
         private var upisane = mutableListOf<Grupa>()
         init {
-            // TODO: Implementirati
+
         }
 
         fun getGroupsByPredmet(nazivP: String): List<Grupa> {
-            // TODO: Implementirati
+
             var grupe = mutableListOf<Grupa>()
             for (g in dataGrupe()) {
                 if (g.nazivPredmeta.equals(nazivP)) grupe.add(g)

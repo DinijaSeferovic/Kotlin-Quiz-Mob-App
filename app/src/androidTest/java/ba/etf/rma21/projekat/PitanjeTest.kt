@@ -17,12 +17,12 @@ import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-/*
+
 @RunWith(AndroidJUnit4::class)
 class PitanjeTest {
     @get:Rule
     val intentsTestRule = IntentsTestRule<MainActivity>(MainActivity::class.java)
-
+/*
     @Test
     fun ucitajuSePitanja() {
         onView(withId(R.id.filterKvizova)).perform(click())
@@ -39,8 +39,8 @@ class PitanjeTest {
             onView(withId(R.id.tekstPitanja)).check(matches(withText(pitanja[indeks].tekst)))
             indeks++
         }
-    }
-
+    }*/
+/*
     @Test
     fun testPredajKviz() {
         onView(withId(R.id.filterKvizova)).perform(click())
@@ -51,7 +51,7 @@ class PitanjeTest {
         onView(withId(R.id.navigacijaPitanja)).check(matches(isDisplayed()))
         onView(withId(R.id.predajKviz)).perform(click())
         onView(withSubstring("Završili ste kviz")).check(matches(isDisplayed()))
-    }
+    }*/
 
     @Test
     fun prikazujeSeIspravanBottomNav() {
@@ -65,4 +65,4 @@ class PitanjeTest {
         onView(withId(R.id.kvizovi)).check(matches(not(isDisplayed())))
         onView(withId(R.id.predmeti)).check(matches(not(isDisplayed())))
     }
-}*/
+}

@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.MainActivity
@@ -16,6 +17,8 @@ import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
+import ba.etf.rma21.projekat.viewmodel.SendDataViewModel
+import java.util.*
 
 class FragmentKvizovi : Fragment() {
 
@@ -28,6 +31,7 @@ class FragmentKvizovi : Fragment() {
     private lateinit var spinnerAdapter: ArrayAdapter<Kviz>
     private var categories = arrayOf("Svi moji kvizovi", "Svi kvizovi", "Urađeni kvizovi", "Budući kvizovi", "Prošli kvizovi")
     private var data : List<Kviz> = emptyList()
+    private lateinit var viewModel: SendDataViewModel
 
     private fun initializeViews(inflater: LayoutInflater) {
 
@@ -80,14 +84,16 @@ class FragmentKvizovi : Fragment() {
         kvizovi = view.findViewById(R.id.listaKvizova)
         mySpinner = view.findViewById(R.id.filterKvizova)
 
+        viewModel= ViewModelProvider(requireActivity()).get(SendDataViewModel::class.java)
+
         initializeViews(inflater)
         kvizovi.setLayoutManager(GridLayoutManager(activity, 2))
         predmetListViewModel.dodajPocetniUpisaniP()
         grupaListViewModel.dodajPocetnuUpisanuG()
         kvizAdapter.updateKvizovi(kvizListViewModel.getKvizovi())
-
         return view
     }
+
 /*
     private fun upisOpen(){
 
@@ -99,10 +105,13 @@ class FragmentKvizovi : Fragment() {
     */
     private fun showKviz(kviz: Kviz) {
         val pokusajFragment = FragmentPokusaj.newInstance()
+        viewModel.sendDataKviz(kviz)
         val transaction = fragmentManager?.beginTransaction()
         transaction?.replace(R.id.container, pokusajFragment)
         transaction?.addToBackStack(null)
         transaction?.commit()
+
+
     }
 
     companion object {
