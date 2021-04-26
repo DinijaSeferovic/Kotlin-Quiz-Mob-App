@@ -40,7 +40,7 @@ class PitanjeTest {
             indeks++
         }
     }
-/*
+
     @Test
     fun testPredajKviz() {
         onView(withId(R.id.filterKvizova)).perform(click())
@@ -51,7 +51,7 @@ class PitanjeTest {
         onView(withId(R.id.navigacijaPitanja)).check(matches(isDisplayed()))
         onView(withId(R.id.predajKviz)).perform(click())
         onView(withSubstring("Završili ste kviz")).check(matches(isDisplayed()))
-    }*/
+    }
 
     @Test
     fun prikazujeSeIspravanBottomNav() {
