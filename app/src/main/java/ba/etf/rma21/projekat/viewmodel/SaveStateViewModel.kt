@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import ba.etf.rma21.projekat.data.models.Pitanje
 
 class SaveStateViewModel {
@@ -7,7 +8,7 @@ class SaveStateViewModel {
     private var odabranaGod:Int = 0
     private var odabraniPred:Int=0
     private var odabranaGru:Int = 0
-    private var mapa: HashMap<Pitanje, Int> = HashMap<Pitanje, Int>()
+    private var poruka: String=""
 
     constructor() {
         odabranaGod= 0
@@ -38,14 +39,14 @@ class SaveStateViewModel {
         return odabranaGru
     }
 
-
-    fun saveDataOdgovor(mapaOdg: HashMap<Pitanje, Int>) {
-        mapa= mapaOdg
+    fun setPorukaFragment(pf: String) {
+        poruka=pf
     }
 
-    fun getDataOdgovor(): HashMap<Pitanje, Int> {
-        return mapa
+    fun getPorukaFragment(): String {
+        return poruka
     }
+
 
 
 }

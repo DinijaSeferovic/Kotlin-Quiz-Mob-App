@@ -7,8 +7,6 @@ import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.view.*
-import androidx.core.text.toSpannable
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import ba.etf.rma21.projekat.MainActivity
@@ -20,8 +18,6 @@ import com.google.android.material.navigation.NavigationView
 
 class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
     private var kvizPitanjeViewModel =  PitanjeKvizViewModel()
-    private lateinit var sideNavigation: NavigationView
-    //private var pitanja = listOf<Pitanje>()
     var spannable = SpannableString("")
     private lateinit var viewModel: SendDataViewModel
 
@@ -31,12 +27,10 @@ class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
 
         val pitanjeFragment = FragmentPitanje.newInstance()
         openFragment(pitanjeFragment)
-        viewModel.sendDataPitanje(pitanja[item.order])
+        viewModel.sendDataPitanje(pitanja[item.order], item.order)
         return@OnNavigationItemSelectedListener true
 
     }
-
-
 
     private fun openFragment(fragment: Fragment) {
         val transaction = fragmentManager?.beginTransaction()
@@ -45,12 +39,12 @@ class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
         transaction?.commit()
     }
 
-
+// dohvatanje pitanja kliknutog kviza
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view =  inflater.inflate(R.layout.pokusaj_fragment, container, false)
         (activity as MainActivity).switchNavigation("pokusaj")
-        sideNavigation= view!!.findViewById(R.id.navigacijaPitanja)
-        sideNavigation.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigacijaPitanja= view!!.findViewById(R.id.navigacijaPitanja)
+        navigacijaPitanja.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         viewModel = ViewModelProvider(requireActivity()).get(SendDataViewModel::class.java)
         /*viewModel.dataKviz.observe(viewLifecycleOwner, Observer {
         })*/
@@ -59,24 +53,28 @@ class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
         return view
     }
 
-
+//dodavanje pitanja u sideNav, bojenje i setanje prvog pitanja
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        for (item in pitanja.indices) {
-            sideNavigation.menu.add(0, item, item, Integer.toString(item+1))
-            val s = SpannableString(sideNavigation.menu.getItem(item).title.toString())
-            s.setSpan(BackgroundColorSpan(Color.BLACK),0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            s.setSpan(ForegroundColorSpan(Color.WHITE),0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            sideNavigation.menu.getItem(item).setTitle(s)
-
-            sideNavigation.menu.getItem(0).setChecked(true)
-            val pitanjeFragment = FragmentPitanje.newInstance()
-            openFragment(pitanjeFragment)
-            viewModel.sendDataPitanje(pitanja[0])
-
-        }
+    super.onViewCreated(view, savedInstanceState)
+    for (item in pitanja.indices) {
+        navigacijaPitanja.menu.add(0, item, item, Integer.toString(item + 1))
+        val s = SpannableString(navigacijaPitanja.menu.getItem(item).title.toString())
+        s.setSpan(BackgroundColorSpan(Color.BLACK), 0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        s.setSpan(ForegroundColorSpan(Color.WHITE), 0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        navigacijaPitanja.menu.getItem(item).setTitle(s)
 
     }
+    val pitanjeFragment = FragmentPitanje.newInstance()
+    viewModel.sendDataPitanje(pitanja[0],0)
+    viewModel.sendNav(navigacijaPitanja.menu)
+    viewModel.sendBrojPitanja(pitanja.size)
+    viewModel.sendBrojTacnih(0)
+    viewModel.sendTacnost(0.0)
+    openFragment(pitanjeFragment)
+
+
+}
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -86,5 +84,7 @@ class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
     companion object {
         private var pitanja = listOf<Pitanje>()
         fun newInstance(): FragmentPokusaj = FragmentPokusaj(pitanja)
+
+        lateinit var navigacijaPitanja: NavigationView
     }
 }

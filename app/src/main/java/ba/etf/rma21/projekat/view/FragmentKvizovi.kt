@@ -114,7 +114,10 @@ class FragmentKvizovi : Fragment() {
 
     }
 
+
+
     companion object {
         fun newInstance(): FragmentKvizovi = FragmentKvizovi()
+
     }
 }

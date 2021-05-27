@@ -62,9 +62,22 @@ class KvizRepository {
             }
             return neuradjeniKvizovi
         }
-        // TODO: Implementirati i ostale potrebne metode
+
         fun sortirajKviz(lista: List<Kviz>): List<Kviz> {
             return lista.sortedBy {it.datumPocetka }
         }
+
+/*
+        suspend fun getAll(): List<Kviz>? {
+            return emptyList()
+        }
+
+        suspend fun getById(id: Int): Kviz? {
+            return null
+        }
+
+        suspend fun getUpisani(): List<Kviz>? {
+            return emptyList()
+        }*/
     }
 }

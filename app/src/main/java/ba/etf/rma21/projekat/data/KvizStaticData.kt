@@ -14,7 +14,7 @@ fun dataKvizovi(): List<Kviz> {
                     Date(121,4,20),Date(121,6,5),
                     null,2,"UTO",null),
             Kviz( "Kviz 6","DM",
-                    Date(121,5,11),Date(121,7,15),
+                    Date(121,2,11),Date(121,7,15),
                     null,2,"PON",null),
             Kviz( "Kviz 3","IM",
                     Date(121,1,25),Date(121,2,23),
@@ -82,12 +82,12 @@ fun dataPitanja(): List<Pitanje> {
     return listOf(
             Pitanje("p1","Koji je tačan odgovor?", listOf("a","b","c"),1),
             Pitanje("p2","Koji je tačan odgovor ovdje?", listOf("a","b","c"),2),
-            Pitanje("p3","Koji je tačan odgovor?", listOf("tacno","netacno","netacno"),0),
+            Pitanje("p3","Koji je tačan odgovor?", listOf("tacno","netacno","netacno2"),0),
             Pitanje("p4","Koji je tačan rezultat?", listOf("1","2","3"),1),
             Pitanje("p5","Koji je tačan odgovor?", listOf("a","b","c"),2),
             Pitanje("p6","Koji je tačan odgovor?", listOf("1","2","3"),2),
             Pitanje("p7","Koji je tačan rezultat?", listOf("a","b","c"),0),
-            Pitanje("p8","Koji je tačan odgovor?", listOf("netacno","tacno","netacno"),1),
+            Pitanje("p8","Koji je tačan odgovor?", listOf("netacno","tacno","netacno2"),1),
             Pitanje("p9","Koji je tačan odgovor?", listOf("abc","bca","cab"),2),
             Pitanje("p10","Koji je tačan odgovor ovdje?", listOf("a","b","c"),1),
             Pitanje("p11","Koji je tačan odgovor?", listOf("a","b","c"),1)

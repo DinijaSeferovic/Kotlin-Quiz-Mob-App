@@ -14,7 +14,7 @@ import java.util.*
 
 class KvizListAdapter(
         private var kvizovi: List<Kviz>,
-        private val onItemClicked: (movie:Kviz) -> Unit): RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
+        private val onItemClicked: (k:Kviz) -> Unit): RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
 
         inner class KvizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val imageDot: ImageView = itemView.findViewById(R.id.imageDot)
