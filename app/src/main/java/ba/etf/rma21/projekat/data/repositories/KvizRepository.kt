@@ -18,7 +18,7 @@ class KvizRepository {
     companion object {
         // TODO: Implementirati
         init {
-            // TODO: Implementirati
+
         }
         var idUpisaneGrupe: Int =0
 

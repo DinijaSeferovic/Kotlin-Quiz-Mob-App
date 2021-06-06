@@ -22,7 +22,7 @@ import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.viewmodel.SendDataViewModel
 
 
-class FragmentPitanje : Fragment(){/*
+class FragmentPitanje : Fragment(){
     private lateinit var textPitanja: TextView
     private lateinit var odgovoriLista: ListView
     private lateinit var viewModel: SendDataViewModel
@@ -104,7 +104,7 @@ class FragmentPitanje : Fragment(){/*
         odgovoriLista.setEnabled(false)
 
     }
-*/
+
     companion object {
 
         fun newInstance(): FragmentPitanje = FragmentPitanje()

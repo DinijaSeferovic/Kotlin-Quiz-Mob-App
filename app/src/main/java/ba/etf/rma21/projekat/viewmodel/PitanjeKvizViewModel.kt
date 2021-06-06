@@ -7,11 +7,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PitanjeKvizViewModel {
-    fun getPitanja(idKviza: Int, onSuccess: () -> Unit, onError: () -> Unit) {
+    fun getPitanja(idKviza: Int, onSuccess: (List<Pitanje>) -> Unit, onError: () -> Unit){
         CoroutineScope(Dispatchers.IO).launch {
             val result = PitanjeKvizRepository.getPitanja(idKviza)
             when (result) {
-                is List<Pitanje> -> onSuccess.invoke()
+                is List<Pitanje> -> onSuccess.invoke(result)
                 else -> onError.invoke()
             }
         }
