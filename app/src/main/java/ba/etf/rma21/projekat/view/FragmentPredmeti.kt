@@ -1,22 +1,26 @@
 package ba.etf.rma21.projekat.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
+import android.widget.*
 import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.MainActivity.Companion.saveViewModel
 import ba.etf.rma21.projekat.R
+import ba.etf.rma21.projekat.data.models.Grupa
+import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.data.repositories.GrupaRepository
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository
+import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
 import ba.etf.rma21.projekat.viewmodel.SaveStateViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class FragmentPredmeti : Fragment() {
@@ -30,8 +34,8 @@ class FragmentPredmeti : Fragment() {
     private lateinit var spinnerAdapterPred: ArrayAdapter<String>
     private lateinit var spinnerAdapterGru: ArrayAdapter<String>
     private var godine = arrayOf("", "1", "2", "3", "4", "5")
-    private var predmeti = mutableListOf<String>("")
-    private var grupe = mutableListOf<String>("")
+    private var dohvaceniPredmeti = emptyList<Predmet>()
+    private var dohvaceneGrupe = emptyList<Grupa>()
     private var spin1: Boolean = false
     private var spin2: Boolean = false
     private var spin3: Boolean = false
@@ -47,34 +51,31 @@ class FragmentPredmeti : Fragment() {
         //spinner selection events
         spinnerGodina.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
-                predmeti = mutableListOf<String>("")
+                var godina: Int = 0
+                if (spinnerGodina.selectedItem.toString() != "")  godina = spinnerGodina.selectedItem.toString().toInt()
+
+                predmetListViewModel.neupisaniPoGod(godina, onSuccess = ::onSuccessPredmet, onError = ::onError)
 
                 if (position > 0 && position < godine.size) {
-                    for (p in predmetListViewModel.neupisaniPoGod(spinnerGodina.selectedItem.toString())) {
-                        predmeti.add(p)
 
-                    }
-                    spinnerAdapterPred = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, predmeti)
-                    spinnerPredmet.adapter = spinnerAdapterPred
                     spinnerPredmet.setSelection(saveViewModel.getPred())
-                    spin1=true
+                    spin1 = true
                     saveViewModel.setGod(position)
-                }
-                else spin1=false
+                } else spin1 = false
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
+
+
         spinnerPredmet.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
-                grupe = mutableListOf<String>("")
 
-                if (position > 0 && position < predmeti.size) {
-                    for (g in grupeListViewModel.getGrupeZaPred(spinnerPredmet.selectedItem.toString())) {
-                        grupe.add(g)
-                    }
-                    spinnerAdapterGru = ArrayAdapter(inflater.context, android.R.layout.simple_dropdown_item_1line, grupe)
-                    spinnerGrupa.adapter = spinnerAdapterGru
+                grupeListViewModel.getGrupeZaPred(dohvaceniPredmeti.find { p -> p.naziv.equals(spinnerPredmet.selectedItem.toString()) }!!.id, onSuccess = ::onSuccessGrupa, onError = ::onError)
+
+                if (position > 0 && position < dohvaceniPredmeti.size) {
+
+
                     spinnerGrupa.setSelection(saveViewModel.getGru())
                     spin2=true
                     saveViewModel.setPred(position)
@@ -89,7 +90,7 @@ class FragmentPredmeti : Fragment() {
         spinnerGrupa.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, itemID: Long) {
                 saveViewModel.setGru(position)
-                if (position > 0 && position < predmeti.size) {
+                if (position > 0 && position < dohvaceneGrupe.size) {
                     spin3=true
                 }
                 else spin3=false
@@ -131,8 +132,8 @@ class FragmentPredmeti : Fragment() {
             if (spin1 && spin2 && spin3) {
                 dodajButton.setClickable(true)
                 dodajButton.setEnabled(true)
-                PredmetRepository.upisiPredmeti(spinnerPredmet.selectedItem.toString())
-                GrupaRepository.upisiGrupu(spinnerGrupa.selectedItem.toString())
+                predmetListViewModel.upisiPredmet(dohvaceniPredmeti.find { p -> p.naziv.equals(spinnerPredmet.selectedItem.toString()) }!!.id, onSuccess = ::onSuccessPredmetUpis, onError = ::onError)
+                grupeListViewModel.upisiUGrupu(dohvaceneGrupe.find{ g -> g.naziv.equals(spinnerGrupa.selectedItem.toString())}!!.id, onSuccess = ::onSuccessGrupaUpis, onError = ::onError)
                 saveViewModel.setGru(0)
                 saveViewModel.setGod(0)
                 saveViewModel.setPred(0)
@@ -145,6 +146,61 @@ class FragmentPredmeti : Fragment() {
             dodajOpen(porukaFragment)
         }
         return view
+    }
+
+    fun onSuccessPredmet(p: List<Predmet>) {
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                dajDohvacenePredmete(p)
+                spinnerAdapterPred = ArrayAdapter(context!!, android.R.layout.simple_dropdown_item_1line, dohvaceniPredmeti.map { p -> p.naziv })
+                spinnerPredmet.adapter = spinnerAdapterPred
+                spinnerPredmet.setSelection(saveViewModel.getPred())
+                spin1 = true
+
+            }
+        }
+    }
+
+    fun onSuccessPredmetUpis(p: Boolean) {
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                val toast = Toast.makeText(context, "Predmet upisan", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+    }
+
+    fun onSuccessGrupa(g: List<Grupa>) {
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                dajDohvaceneGrupe(g)
+                spinnerAdapterGru = ArrayAdapter(context!!, android.R.layout.simple_dropdown_item_1line, dohvaceneGrupe.map { g -> g.naziv })
+                spinnerGrupa.adapter = spinnerAdapterGru
+                spinnerGrupa.setSelection(saveViewModel.getGru())
+                spin2=true
+            }
+        }
+    }
+
+    fun onSuccessGrupaUpis(g: Boolean) {
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                val toast = Toast.makeText(context, "Grupa upisana", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+    }
+
+    fun onError() {
+
+    }
+
+    fun dajDohvacenePredmete(p: List<Predmet>) {
+        dohvaceniPredmeti=p
+    }
+
+    fun dajDohvaceneGrupe(g: List<Grupa>) {
+        dohvaceneGrupe=g
     }
 
     companion object {

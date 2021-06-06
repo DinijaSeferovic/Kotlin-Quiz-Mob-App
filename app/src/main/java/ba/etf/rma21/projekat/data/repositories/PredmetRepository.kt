@@ -1,8 +1,7 @@
 package ba.etf.rma21.projekat.data.repositories
 
-import ba.etf.rma21.projekat.data.dataPredmeti
 import ba.etf.rma21.projekat.data.models.Predmet
-
+/*
 class PredmetRepository {
     companion object {
         private var upisani= mutableListOf<Predmet>()
@@ -43,4 +42,4 @@ class PredmetRepository {
 
     }
 
-}
+}*/

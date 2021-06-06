@@ -22,7 +22,7 @@ import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.viewmodel.SendDataViewModel
 
 
-class FragmentPitanje : Fragment(){
+class FragmentPitanje : Fragment(){/*
     private lateinit var textPitanja: TextView
     private lateinit var odgovoriLista: ListView
     private lateinit var viewModel: SendDataViewModel
@@ -41,7 +41,7 @@ class FragmentPitanje : Fragment(){
         pitanje= viewModel.dataPitanje.value!!
         redniBr= viewModel.redniBrPitanja.value!!
         var brojTacnih: Int= viewModel.brojTacnih.value!!
-        textPitanja.text= pitanje.tekst
+        textPitanja.text= pitanje.tekstPitanja
 
         val odgovoriAdapter: ArrayAdapter<*>
         odgovoriAdapter = ArrayAdapter(inflater.context, android.R.layout.simple_list_item_1, pitanje.opcije)
@@ -104,7 +104,7 @@ class FragmentPitanje : Fragment(){
         odgovoriLista.setEnabled(false)
 
     }
-
+*/
     companion object {
 
         fun newInstance(): FragmentPitanje = FragmentPitanje()

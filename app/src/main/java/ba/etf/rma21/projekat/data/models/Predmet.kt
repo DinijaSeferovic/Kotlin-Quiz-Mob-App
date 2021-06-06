@@ -1,9 +1,14 @@
 package ba.etf.rma21.projekat.data.models
 
-data class Predmet(val naziv: String, val godina: Int) {
-}
+import com.google.gson.annotations.SerializedName
 
 /*
-data class Predmet(val id:Int) {
+data class Predmet(val naziv: String, val godina: Int) {
+}*/
+
+
+data class Predmet(
+        @SerializedName("id") val id: Int,
+        @SerializedName("naziv") val naziv: String,
+        @SerializedName("godina") val godina: Int) {
 }
- */

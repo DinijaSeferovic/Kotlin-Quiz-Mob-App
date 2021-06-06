@@ -1,6 +1,7 @@
 package ba.etf.rma21.projekat.view
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.KvizTaken
+import ba.etf.rma21.projekat.data.models.Predmet
+import ba.etf.rma21.projekat.viewmodel.KvizListViewModel
+import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
 class KvizListAdapter(
         private var kvizovi: List<Kviz>,
         private val onItemClicked: (k:Kviz) -> Unit): RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
+        private var predmetiZaKviz = mutableMapOf<Kviz, List<Predmet>>()
+        private var kvizListViewModel =  KvizListViewModel()
+        private var predmetListViewModel =  PredmetListViewModel()
+        private  var poceti: KvizTaken? = null
 
         inner class KvizViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val imageDot: ImageView = itemView.findViewById(R.id.imageDot)
@@ -33,29 +46,48 @@ class KvizListAdapter(
         override fun getItemCount(): Int = kvizovi.size
 
         override fun onBindViewHolder(holder: KvizViewHolder, position: Int) {
+            GlobalScope.launch (Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    kvizListViewModel.getPocetiKviz(kvizovi[position], onSuccess = ::onSuccessKviz, onError = ::onError)
+                    //predmetListViewModel.getPredmeteZaKviz(kvizovi[position], onSuccess = ::onSuccessPredmet, onError = ::onError)
+                }
+            }
 
             val current = Date()
             val cal = Calendar.getInstance()
             cal.time = current
 
             var colorMatch =""
-            if (kvizovi[position].datumPocetka<current && kvizovi[position].datumKraj>current && kvizovi[position].datumRada==null) colorMatch="zelena"
-            else if ((kvizovi[position].datumRada!=null) && kvizovi[position].datumRada!!<=current) colorMatch="plava"
-            else if (kvizovi[position].datumPocetka>current) colorMatch="zuta"
-            else if (kvizovi[position].datumKraj<current && kvizovi[position].datumRada==null) colorMatch="crvena"
 
+            if (poceti!=null) {
+                if (!kvizovi[position].datumPocetka.after(current) && poceti!!.datumRada == null) colorMatch = "zelena"
+                else if ((poceti != null && poceti!!.datumRada != null) && (poceti!!.datumRada!!.before(current) || poceti!!.datumRada==current)) colorMatch = "plava"
+                else if (kvizovi[position].datumPocetka.after(current)) colorMatch = "zuta"
+                else if (kvizovi[position].datumKraj != null && kvizovi[position].datumKraj!!.before(current) && poceti!!.datumRada == null) colorMatch = "crvena"
+            }
+            else {
+                colorMatch = "zelena"
+            }
             val pattern = "dd.MM.yyyy"
             val simpleDateFormat = SimpleDateFormat(pattern)
             var prikazDatuma =""
             if (colorMatch=="zuta") prikazDatuma=simpleDateFormat.format(kvizovi[position].datumPocetka)
-            else if (colorMatch=="zelena" || colorMatch=="crvena") prikazDatuma=simpleDateFormat.format(kvizovi[position].datumKraj)
-            else if (colorMatch=="plava") prikazDatuma=simpleDateFormat.format(kvizovi[position].datumRada)
+            else if (colorMatch=="zelena" || colorMatch=="crvena") prikazDatuma=""
+            else if (colorMatch=="plava") prikazDatuma=simpleDateFormat.format(poceti!!.datumRada)
+
+
+            var nazivPredmeta=""
+            var listaPredmeta = predmetiZaKviz.get(kvizovi[position])!!
+            for (p in listaPredmeta) {
+                nazivPredmeta+=p.naziv
+                if (listaPredmeta.size>1 && p!=listaPredmeta[listaPredmeta.size-1]) nazivPredmeta+=", "
+            }
+
 
             holder.textKviz.text = kvizovi[position].naziv
-            holder.textPredmet.text = kvizovi[position].nazivPredmeta
+            holder.textPredmet.text = nazivPredmeta
             holder.textDatum.text = prikazDatuma
-            if (kvizovi[position].osvojeniBodovi != null) holder.textBod.text = kvizovi[position].osvojeniBodovi.toString()
-            else holder.textBod.text= ""
+            if (poceti!=null) holder.textBod.text = poceti!!.osvojeniBodovi.toString()
             holder.textVrijeme.text = kvizovi[position].trajanje.toString()
             holder.itemView.setOnClickListener{ onItemClicked(kvizovi[position]) }
 
@@ -65,13 +97,45 @@ class KvizListAdapter(
             var id: Int = context.getResources()
                     .getIdentifier(colorMatch, "drawable", context.getPackageName())
             if (id===0) id=context.getResources()
-                    .getIdentifier("plava", "drawable", context.getPackageName())
+                    .getIdentifier("zuta", "drawable", context.getPackageName())
             holder.imageDot.setImageResource(id)
             //holder.itemView.setOnClickListener{ onItemClicked(kvizovi[position]) }
         }
+
         fun updateKvizovi(kvizovi: List<Kviz>) {
             this.kvizovi = kvizovi
             notifyDataSetChanged()
         }
 
-    }
+        fun updatePredmeti(predmeti:MutableMap<Kviz, List<Predmet>>) {
+            this.predmetiZaKviz = predmeti
+        }
+
+        fun onSuccessKviz(kviz: KvizTaken) {
+            GlobalScope.launch (Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    dajPoceti(kviz)
+                }
+            }
+        }
+
+
+
+        fun dajPoceti(kviz: KvizTaken) {
+            val current = Date()
+            val cal = Calendar.getInstance()
+            cal.time = current
+            kviz.datumRada=current
+            poceti=kviz
+        }
+
+
+
+        fun onError() {
+
+        }
+
+        }
+
+
+

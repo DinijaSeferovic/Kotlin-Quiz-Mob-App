@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,11 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.MainActivity
 import ba.etf.rma21.projekat.R
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.viewmodel.GrupaListViewModel
 import ba.etf.rma21.projekat.viewmodel.KvizListViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetListViewModel
 import ba.etf.rma21.projekat.viewmodel.SendDataViewModel
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FragmentKvizovi : Fragment() {
 
@@ -58,24 +63,79 @@ class FragmentKvizovi : Fragment() {
         //filter by id
         //for (Kviz in getAll()) {
         if (categoryID == 0) {
-            data= kvizListViewModel.getMojiKvizovi()
-            kvizAdapter.updateKvizovi(data)
+            kvizListViewModel.getMojiKvizovi(onSuccess = ::onSuccessUp, onError = ::onError)
+            /*data= kvizListViewModel.getMojiKvizovi()
+            kvizAdapter.updateKvizovi(data)*/
         } else if (categoryID == 1) {
-            data= kvizListViewModel.getKvizovi()
-            kvizAdapter.updateKvizovi(data)
+            kvizListViewModel.getKvizovi(onSuccess = ::onSuccessSvi, onError = ::onError)
+            /*data= kvizListViewModel.getKvizovi()
+            kvizAdapter.updateKvizovi(data)*/
         } else if (categoryID == 2) {
-            data= kvizListViewModel.getGotoviKvizovi()
-            kvizAdapter.updateKvizovi(data)
+            kvizListViewModel.getGotoviKvizovi(onSuccess = ::onSuccessUp, onError = ::onError)
+            /*data= kvizListViewModel.getGotoviKvizovi()
+            kvizAdapter.updateKvizovi(data)*/
         } else if (categoryID == 3) {
-            data= kvizListViewModel.getBuduciKvizovi()
-            kvizAdapter.updateKvizovi(data)
+            kvizListViewModel.getBuduciKvizovi(onSuccess = ::onSuccessUp, onError = ::onError)
+            /*data= kvizListViewModel.getBuduciKvizovi()
+            kvizAdapter.updateKvizovi(data)*/
         } else if (categoryID == 4) {
-            data= kvizListViewModel.getNeodrzaniKvizovi()
-            kvizAdapter.updateKvizovi(data)
+            kvizListViewModel.getNeodrzaniKvizovi(onSuccess = ::onSuccessUp, onError = ::onError)
+            /*data= kvizListViewModel.getNeodrzaniKvizovi()
+            kvizAdapter.updateKvizovi(data)*/
 
             //}
 
         }
+    }
+
+    fun onSuccessSvi(kvizovi:List<Kviz>, predmeti:MutableMap<Kviz, List<Predmet>>){
+        val toast = Toast.makeText(context, "Kvizovi pronadjeni", Toast.LENGTH_SHORT)
+        toast.show()
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                kvizAdapter.updateKvizovi(kvizovi)
+                kvizAdapter.updatePredmeti(predmeti)
+
+            }
+        }
+    }
+
+    fun onSuccessUp(kvizovi:List<Kviz>, predmeti:MutableMap<Kviz, List<Predmet>>){
+        val toast = Toast.makeText(context, "Kvizovi pronadjeni", Toast.LENGTH_SHORT)
+        toast.show()
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                kvizAdapter.updateKvizovi(kvizovi)
+                kvizAdapter.updatePredmeti(predmeti)
+
+            }
+        }
+    }
+
+    fun onSuccessPocni(){
+
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                val toast = Toast.makeText(context, "Kviz zapocet", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
+    }
+
+    fun onSuccessGrupa(b: Boolean){
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                if (b) {
+                    val toast = Toast.makeText(context, "Pocetni Upisan", Toast.LENGTH_SHORT)
+                    toast.show()
+                }
+            }
+        }
+    }
+
+    fun onError() {
+        val toast = Toast.makeText(context, "Greska", Toast.LENGTH_SHORT)
+        toast.show()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,9 +148,15 @@ class FragmentKvizovi : Fragment() {
 
         initializeViews(inflater)
         kvizovi.setLayoutManager(GridLayoutManager(activity, 2))
-        predmetListViewModel.dodajPocetniUpisaniP()
-        grupaListViewModel.dodajPocetnuUpisanuG()
-        kvizAdapter.updateKvizovi(kvizListViewModel.getKvizovi())
+        GlobalScope.launch (Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                grupaListViewModel.dodajPocetniUpisani(onSuccess = ::onSuccessGrupa, onError = ::onError)
+                kvizListViewModel.getMojiKvizovi(onSuccess = ::onSuccessUp, onError = ::onError)
+                kvizListViewModel.zapocniKviz(3, onSuccess = ::onSuccessPocni, onError = ::onError)
+            }
+        }
+
+
         return view
     }
 
@@ -105,6 +171,7 @@ class FragmentKvizovi : Fragment() {
     */
     private fun showKviz(kviz: Kviz) {
         val pokusajFragment = FragmentPokusaj.newInstance()
+        kvizListViewModel.zapocniKviz(kviz.id, onSuccess = ::onSuccessPocni, onError = ::onError)
         viewModel.sendDataKviz(kviz)
         val transaction = fragmentManager?.beginTransaction()
         transaction?.replace(R.id.container, pokusajFragment)

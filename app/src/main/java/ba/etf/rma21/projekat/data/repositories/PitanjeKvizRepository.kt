@@ -1,12 +1,28 @@
 package ba.etf.rma21.projekat.data.repositories
 
-import ba.etf.rma21.projekat.data.dataPitanja
-import ba.etf.rma21.projekat.data.dataPitanjeKviz
+import ba.etf.rma21.projekat.data.models.ApiAdapter
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.Pitanje
-import ba.etf.rma21.projekat.data.models.PitanjeKviz
-import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getMyKvizes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
+class PitanjeKvizRepository {
+    companion object {
+
+        suspend fun getPitanja(idKviza: Int?): List<Pitanje>? {
+            return withContext(Dispatchers.IO) {
+                var response = ApiAdapter.retrofit.getPitanja(idKviza!!)
+                val responseBody = response.body()
+                return@withContext responseBody
+            }
+        }
+
+    }
+
+}
+
+
+/*
 class PitanjeKvizRepository {
     companion object{
         fun getPitanja(nazivKviza: String?, nazivPredmeta: String?): List<Pitanje>{
@@ -37,4 +53,4 @@ class PitanjeKvizRepository {
             return dataPitanjeKviz()
         }
     }
-}
+}*/

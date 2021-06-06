@@ -11,11 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import ba.etf.rma21.projekat.data.dataKvizovi
-import ba.etf.rma21.projekat.data.repositories.GrupaRepository
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository
 import ba.etf.rma21.projekat.view.FragmentKvizovi
-import ba.etf.rma21.projekat.view.FragmentPokusaj
 import ba.etf.rma21.projekat.view.FragmentPokusaj.Companion.navigacijaPitanja
 import ba.etf.rma21.projekat.view.FragmentPoruka
 import ba.etf.rma21.projekat.view.FragmentPredmeti
@@ -64,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 s.setSpan(ForegroundColorSpan(Color.WHITE), 0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 navigacijaPitanja.menu.getItem(viewModel.navigacija.value!!.size-1).setTitle(s)
                 navigacijaPitanja.menu.getItem(viewModel.navigacija.value!!.size-1).setEnabled(false)
-                editKviz()
+                //editKviz()
 
                 return@OnNavigationItemSelectedListener true
             }
@@ -76,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
         false
     }
-
+/*
     private fun editKviz() {
         var current = Date()
         var cal = Calendar.getInstance()
@@ -84,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         dataKvizovi()[dataKvizovi().indexOf(viewModel.dataKviz.value!!)].osvojeniBodovi = (viewModel.tacnost.value!!/100).toFloat()
         dataKvizovi()[dataKvizovi().indexOf(viewModel.dataKviz.value!!)].datumRada = current
     }
-
+*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

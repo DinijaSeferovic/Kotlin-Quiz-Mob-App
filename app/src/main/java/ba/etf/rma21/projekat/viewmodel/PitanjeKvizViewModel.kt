@@ -2,9 +2,18 @@ package ba.etf.rma21.projekat.viewmodel
 
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PitanjeKvizViewModel {
-    fun getPitanja(nazivKviza: String?, nazivPredmeta: String?): List<Pitanje>{
-        return PitanjeKvizRepository.getPitanja(nazivKviza,nazivPredmeta)
+    fun getPitanja(idKviza: Int, onSuccess: () -> Unit, onError: () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = PitanjeKvizRepository.getPitanja(idKviza)
+            when (result) {
+                is List<Pitanje> -> onSuccess.invoke()
+                else -> onError.invoke()
+            }
+        }
     }
 }

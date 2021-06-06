@@ -21,7 +21,7 @@ class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
     var spannable = SpannableString("")
     private lateinit var viewModel: SendDataViewModel
 
-
+/*
     //Listener za click
     private val mOnNavigationItemSelectedListener = NavigationView.OnNavigationItemSelectedListener { item ->
 
@@ -48,7 +48,8 @@ class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
         viewModel = ViewModelProvider(requireActivity()).get(SendDataViewModel::class.java)
         /*viewModel.dataKviz.observe(viewLifecycleOwner, Observer {
         })*/
-        pitanja= kvizPitanjeViewModel.getPitanja(viewModel.dataKviz.value!!.naziv,viewModel.dataKviz.value!!.nazivPredmeta)
+        //pitanja= kvizPitanjeViewModel.getPitanja(viewModel.dataKviz.value!!.naziv,viewModel.dataKviz.value!!.nazivPredmeta)
+        pitanja= kvizPitanjeViewModel.getPitanja(viewModel.dataKviz.value!!.id,viewModel.dataKviz.value!!.nazivPredmeta)
 
         return view
     }
@@ -80,7 +81,7 @@ class FragmentPokusaj (var pitanja: List<Pitanje>): Fragment(){
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.nav_pitanja, menu)
 
-    }
+    }*/
     companion object {
         private var pitanja = listOf<Pitanje>()
         fun newInstance(): FragmentPokusaj = FragmentPokusaj(pitanja)

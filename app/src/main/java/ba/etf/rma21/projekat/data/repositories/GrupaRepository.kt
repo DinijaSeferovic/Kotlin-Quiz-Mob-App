@@ -1,7 +1,10 @@
 package ba.etf.rma21.projekat.data.repositories
 
-import ba.etf.rma21.projekat.data.dataGrupe
+import ba.etf.rma21.projekat.data.models.ApiAdapter
 import ba.etf.rma21.projekat.data.models.Grupa
+import ba.etf.rma21.projekat.data.models.Message
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class GrupaRepository {
 
@@ -10,8 +13,13 @@ class GrupaRepository {
         init {
 
         }
+        suspend fun upisiUGrupu(idGrupe: Int) : Message {
+            return withContext(Dispatchers.IO) {
+                return@withContext ApiAdapter.retrofit.upisiUGrupu(idGrupe, AccountRepository.getHash())
+            }
+        }
 
-        fun getGroupsByPredmet(nazivP: String): List<Grupa> {
+        /*fun getGroupsByPredmet(nazivP: String): List<Grupa> {
 
             var grupe = mutableListOf<Grupa>()
             for (g in dataGrupe()) {
@@ -42,6 +50,6 @@ class GrupaRepository {
                 grupe.add(g.naziv)
             }
             return grupe
-        }
+        }*/
     }
 }

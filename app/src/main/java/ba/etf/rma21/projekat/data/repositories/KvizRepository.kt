@@ -1,9 +1,16 @@
 package ba.etf.rma21.projekat.data.repositories
 
-import ba.etf.rma21.projekat.data.dataKvizovi
+import android.util.Log
+import ba.etf.rma21.projekat.data.models.ApiAdapter
 import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.data.repositories.GrupaRepository.Companion.upisaniStringG
-import ba.etf.rma21.projekat.data.repositories.PredmetRepository.Companion.upisaniStringP
+import ba.etf.rma21.projekat.data.models.KvizTaken
+import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository.Companion.getPredmeteZaKviz
+import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository.Companion.getPredmeteZaMojKviz
+import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository.Companion.getUpisaneGrupe
+import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository.Companion.getUpisanePredmete
+import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository.Companion.getPocetiKvizovi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class KvizRepository {
@@ -13,52 +20,97 @@ class KvizRepository {
         init {
             // TODO: Implementirati
         }
+        var idUpisaneGrupe: Int =0
 
-        fun getMyKvizes(): List<Kviz> {
+        suspend fun getAll(): List<Kviz>? {
+            return withContext(Dispatchers.IO) {
+                var response = ApiAdapter.retrofit.getAll()
+                val responseBody = response.body()
+                return@withContext responseBody
+                }
+        }
+
+        suspend fun getById(id: Int): Kviz? {
+            return withContext(Dispatchers.IO) {
+                var response = ApiAdapter.retrofit.getKviz(id)
+                val responseBody = response.body()
+                return@withContext responseBody
+            }
+        }
+        suspend fun getKvizoveZaGrupu(id: Int): List<Kviz>? {
+            return withContext(Dispatchers.IO) {
+                var response = ApiAdapter.retrofit.getUpisani(id).body()
+
+                return@withContext response
+            }
+        }
+        suspend fun getUpisani(): List<Kviz> {
+
+            return withContext(Dispatchers.IO) {
+                val upisaniKvizovi= mutableListOf<Kviz>()
+                val upisaneGrupe = getUpisaneGrupe()
+                for (g in upisaneGrupe!!) {
+                    //if (getUpisanePredmete().any{ p -> p.id.equals(g.PredmetId)})
+                        upisaniKvizovi+= getKvizoveZaGrupu(g.id)!!
+                }
+
+                return@withContext upisaniKvizovi
+            }
+        }
+
+        fun idUpisaneGrupe(id: Int) {
+            idUpisaneGrupe=id
+        }
+
+
+        suspend fun getMyKvizes(): List<Kviz> {
 
             var mojiKvizovi = mutableListOf<Kviz>()
-            for (k in getAll()) {
-                if (upisaniStringP().any { p -> p.equals(k.nazivPredmeta) }
-                        && upisaniStringG().any {  g -> g.equals(k.nazivGrupe) }) mojiKvizovi.add(k)
-
+            for (k in getUpisani()!!) {
+                for (p in getPredmeteZaMojKviz(k)) {
+                    if (getUpisaneGrupe()!!.any { g -> g.PredmetId.equals(p.id)} && getUpisanePredmete().contains(p)) {
+                        mojiKvizovi.add(k)
+                    }
+                }
             }
+
             return mojiKvizovi
         }
 
-        fun getAll(): List<Kviz> {
-
-            return dataKvizovi()
-        }
-
-        fun getDone(): List<Kviz> {
+        suspend fun getDone(): List<Kviz> {
 
             var uradjeniKvizovi= mutableListOf<Kviz>()
-            for (k in getMyKvizes()) {
-                if (k.datumRada!=null) uradjeniKvizovi.add(k)
+            if (getPocetiKvizovi()==null) return emptyList()
+            for (k in getPocetiKvizovi()!!) {
+                if (getById(k.id!!)!=null && getMyKvizes().contains(getById(k.id!!)))  {
+                    getById(k.id!!)?.let { uradjeniKvizovi.add(it) }
+                }
+
             }
             return uradjeniKvizovi
+
         }
 
-        fun getFuture(): List<Kviz> {
+        suspend fun getFuture(): List<Kviz> {
 
             var buduciKvizovi= mutableListOf<Kviz>()
             val current = Date()
             val cal = Calendar.getInstance()
             cal.time = current
-            for (k in getMyKvizes()) {
-                if (k.datumRada==null && k.datumPocetka>current) buduciKvizovi.add(k)
+            for (k in getAll()!!) {
+                if (k.datumPocetka>current && getMyKvizes().contains(getById(k.id!!))) buduciKvizovi.add(k)
             }
             return buduciKvizovi
         }
 
-        fun getNotTaken(): List<Kviz> {
+        suspend fun getNotTaken(): List<Kviz> {
 
             var neuradjeniKvizovi= mutableListOf<Kviz>()
             val current = Date()
             val cal = Calendar.getInstance()
             cal.time = current
-            for (k in getMyKvizes()) {
-                if (k.datumRada==null && k.datumKraj<current) neuradjeniKvizovi.add(k)
+            for (k in getAll()!!) {
+                if (getMyKvizes().contains(getById(k.id!!)) && getPocetiKvizovi()!!.any { taken -> taken.id!!.equals(k.id) }) neuradjeniKvizovi.add(k)
             }
             return neuradjeniKvizovi
         }
@@ -67,17 +119,16 @@ class KvizRepository {
             return lista.sortedBy {it.datumPocetka }
         }
 
-/*
-        suspend fun getAll(): List<Kviz>? {
-            return emptyList()
+        suspend fun getPocetiKviz(kviz: Kviz): KvizTaken? {
+            val pocetiKvizovi = getPocetiKvizovi()
+            var pocetiKviz: KvizTaken? = null
+            if (pocetiKvizovi== null) return null
+            for (p in pocetiKvizovi!!) {
+                if (p.KvizId.equals(kviz.id)) pocetiKviz = p
+            }
+            return pocetiKviz
         }
 
-        suspend fun getById(id: Int): Kviz? {
-            return null
-        }
 
-        suspend fun getUpisani(): List<Kviz>? {
-            return emptyList()
-        }*/
     }
 }
