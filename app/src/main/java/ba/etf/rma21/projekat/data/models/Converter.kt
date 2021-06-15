@@ -35,6 +35,7 @@ class Converter {
     @TypeConverter
     fun dateToTimestamp(date: Date?): String? {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-        return sdf.format(date)
+        if (date!=null) return sdf.format(date)
+        else return sdf.format(Date(0,0,0))
     }
 }

@@ -25,7 +25,8 @@ data class Kviz(
         @ColumnInfo(name = "datumPocetka") @SerializedName("datumPocetak") val datumPocetka: Date,
         @TypeConverters(Converter::class)
         @ColumnInfo(name = "datumKraj") @SerializedName("datumKraj") val datumKraj: Date?,
-        @ColumnInfo(name = "trajanje") @SerializedName("trajanje") val trajanje: Int) {
+        @ColumnInfo(name = "trajanje") @SerializedName("trajanje") val trajanje: Int){
+        //@ColumnInfo(name = "idKvizTaken")  val idKvizTaken: Int){
 
 
 }

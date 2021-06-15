@@ -64,6 +64,7 @@ class AccountRepository {
         suspend fun postaviHash(hash:String) : String?{
             return withContext(Dispatchers.IO) {
                 setHash(hash)
+
                 try{
                     var db = AppDatabase.getInstance(context)
 

@@ -23,6 +23,10 @@ import ba.etf.rma21.projekat.viewmodel.SaveStateViewModel
 import ba.etf.rma21.projekat.viewmodel.SendDataViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -116,14 +120,19 @@ class MainActivity : AppCompatActivity() {
         val hash = uri.getStringExtra("payload")
         if (hash != null) {
             this?.let { accountViewModel.postaviHash(hash, onSuccess = ::onSuccess, onError = ::onError)}
-            val toast = Toast.makeText(this, "1Trenutni hash korisnika: " + hash, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(this, "Trenutni hash korisnika: " + hash, Toast.LENGTH_SHORT)
+            toast.show()
+        }
+        else {
+            this?.let { accountViewModel.postaviHash(AccountRepository.getHash(), onSuccess = ::onSuccess, onError = ::onError)}
+            val toast = Toast.makeText(this, "Trenutni hash korisnika: " + AccountRepository.getHash(), Toast.LENGTH_SHORT)
             toast.show()
         }
 
     }
     else {
-        this?.let { accountViewModel.postaviHash(AccountRepository.acHash, onSuccess = ::onSuccess, onError = ::onError)}
-        val toast = Toast.makeText(this, "Trenutni hash korisnika: " + AccountRepository.acHash, Toast.LENGTH_SHORT)
+        this?.let { accountViewModel.postaviHash(AccountRepository.getHash(), onSuccess = ::onSuccess, onError = ::onError)}
+        val toast = Toast.makeText(this, "Trenutni hash korisnika: " + AccountRepository.getHash(), Toast.LENGTH_SHORT)
         toast.show()
     }
     }
@@ -136,6 +145,7 @@ class MainActivity : AppCompatActivity() {
         val toast = Toast.makeText(this, "Error", Toast.LENGTH_SHORT)
         toast.show()
     }
+
 
 
     private fun openFragment(fragment: Fragment) {

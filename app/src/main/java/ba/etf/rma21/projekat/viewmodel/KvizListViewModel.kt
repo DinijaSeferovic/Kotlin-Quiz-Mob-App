@@ -1,9 +1,11 @@
 package ba.etf.rma21.projekat.viewmodel
 
+import android.content.Context
 import android.util.Log
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Predmet
+import ba.etf.rma21.projekat.data.repositories.DBRepository
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository
 import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
@@ -16,6 +18,12 @@ import kotlin.reflect.KFunction1
 class KvizListViewModel {
 
         val scope = CoroutineScope(Job() + Dispatchers.Main)
+
+        fun setContext(context: Context) {
+            KvizRepository.setContext(context)
+            TakeKvizRepository.setContext(context)
+            DBRepository.setContext(context)
+        }
 
         fun sortiraj (lista: List<Kviz>):List<Kviz> {
             return KvizRepository.sortirajKviz(lista)
@@ -35,8 +43,10 @@ class KvizListViewModel {
         }
         fun getMojiKvizovi(onSuccess: (kvizovi: List<Kviz>, predmeti: MutableMap<Kviz,List<Predmet>>) -> Unit, onError: () -> Unit) {
             scope.launch {
+                DBRepository.updateNow()
                 val resultK = sortiraj(KvizRepository.getMyKvizes()!!)
                 var resultP = mutableMapOf<Kviz,List<Predmet>>()
+
                 for (k in resultK) {
                     resultP.put(k,PredmetIGrupaRepository.getPredmeteZaMojKviz(k))
                 }

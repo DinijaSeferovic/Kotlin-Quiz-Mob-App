@@ -2,6 +2,7 @@ package ba.etf.rma21.projekat.data.repositories
 
 import android.content.Context
 import android.util.Log
+import ba.etf.rma21.projekat.data.AppDatabase
 import ba.etf.rma21.projekat.data.models.*
 import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getKvizoveZaGrupu
 import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.idUpisaneGrupe
@@ -15,6 +16,10 @@ class PredmetIGrupaRepository {
             private lateinit var context: Context
             fun setContext(_context: Context){
                 context=_context
+            }
+
+            fun getContext(): Context {
+                return context
             }
             private var upisani= mutableListOf<Predmet>()
 
@@ -86,7 +91,6 @@ class PredmetIGrupaRepository {
             }
 
 
-
             suspend fun upisiUGrupu(idGrupa:Int):Boolean {
                 val mess = GrupaRepository.upisiUGrupu(idGrupa)
                 if(mess.message == "Grupa not found." || mess.message.contains("Ne postoji account gdje je hash=")) return false
@@ -94,7 +98,7 @@ class PredmetIGrupaRepository {
                 return true
             }
 
-            suspend fun getUpisaneGrupe():List<Grupa>?{
+            suspend fun getUpisaneGrupeApi():List<Grupa>?{
                 return withContext(Dispatchers.IO) {
                     var response = ApiAdapter.retrofit.getUpisaneGrupe(AccountRepository.getHash())
                     val responseBody = response.body()
@@ -102,17 +106,34 @@ class PredmetIGrupaRepository {
                 }
             }
 
+            suspend fun getUpisaneGrupe():List<Grupa>?{
+                return withContext(Dispatchers.IO) {
+                    var db = AppDatabase.getInstance(context)
+                    return@withContext db!!.grupaDao().getAll()
+                }
+            }
+
              suspend fun upisiPredmet(pr: Int): Boolean{
                 var predmeti = getPredmeti()
                 for (p in predmeti!!) {
-                    if (pr.equals(p.id)) upisani.add(p)
+                    if (pr.equals(p.id)) {
+                        upisani.add(p)
+                        withContext(Dispatchers.IO) {
+                            var db = AppDatabase.getInstance(context)
+                            if (!db!!.predmetDao().getAll().any { pr -> pr.id.equals(p.id) })db!!.predmetDao().insertPredmet(p)
+                            return@withContext
+                        }
+                    }
+
                 }
-                 Log.i ("upisiPredmet", pr.toString())
                  return true
             }
 
-            fun getUpisanePredmete(): List<Predmet> {
-                return upisani
+            suspend fun getUpisanePredmete(): List<Predmet> {
+                return withContext(Dispatchers.IO) {
+                    var db = AppDatabase.getInstance(context)
+                    return@withContext db!!.predmetDao().getAll()
+                }
             }
 
             suspend fun getPredmetiZaGod(god: Int) : List<Predmet> {

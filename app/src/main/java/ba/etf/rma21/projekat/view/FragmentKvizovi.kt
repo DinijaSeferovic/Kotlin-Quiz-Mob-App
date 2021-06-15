@@ -155,7 +155,9 @@ class FragmentKvizovi : Fragment() {
                 kvizListViewModel.zapocniKviz(3, onSuccess = ::onSuccessPocni, onError = ::onError)
             }
         }
-
+        kvizListViewModel.setContext(context!!)
+        predmetListViewModel.setContext(context!!)
+        grupaListViewModel.setContext(context!!)
 
         return view
     }
