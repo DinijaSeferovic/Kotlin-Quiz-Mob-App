@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import android.content.Context
 import ba.etf.rma21.projekat.data.models.ApiAdapter
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.repositories.AccountRepository.Companion.getHash
@@ -10,7 +11,10 @@ import java.lang.Exception
 
 class TakeKvizRepository {
     companion object {
-
+        private lateinit var context: Context
+        fun setContext(_context: Context){
+            context=_context
+        }
         suspend fun zapocniKviz(idKviza: Int?): KvizTaken? {
             return withContext(Dispatchers.IO) {
                 try {

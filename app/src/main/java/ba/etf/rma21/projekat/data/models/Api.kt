@@ -74,10 +74,17 @@ interface Api {
             @Path("id") id: String
     ): Response<List<KvizTaken>>
 
-///////////////////
+
     @POST("/student/{id}/kviz/{kid}")
     suspend fun zapocniKviz(
             @Path("id") id: String,
             @Path("kid") kid: Int
     ): Response<KvizTaken>
+
+    @GET ("/account/{id}/lastUpdate/?=date")
+    suspend fun zadnjiUpdate (
+            @Path("id") id: String,
+            @Query("date") date: String
+    ): Changed
+
 }

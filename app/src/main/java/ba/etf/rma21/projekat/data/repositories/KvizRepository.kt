@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import android.content.Context
 import android.util.Log
 import ba.etf.rma21.projekat.data.models.ApiAdapter
 import ba.etf.rma21.projekat.data.models.Kviz
@@ -21,7 +22,10 @@ class KvizRepository {
 
         }
         var idUpisaneGrupe: Int =0
-
+        private lateinit var context: Context
+        fun setContext(_context: Context){
+            context=_context
+        }
         suspend fun getAll(): List<Kviz>? {
             return withContext(Dispatchers.IO) {
                 var response = ApiAdapter.retrofit.getAll()

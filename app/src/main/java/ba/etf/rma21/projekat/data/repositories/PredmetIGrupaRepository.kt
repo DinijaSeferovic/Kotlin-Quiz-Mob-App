@@ -1,5 +1,6 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import android.content.Context
 import android.util.Log
 import ba.etf.rma21.projekat.data.models.*
 import ba.etf.rma21.projekat.data.repositories.KvizRepository.Companion.getKvizoveZaGrupu
@@ -11,6 +12,10 @@ import kotlinx.coroutines.withContext
 
 class PredmetIGrupaRepository {
         companion object{
+            private lateinit var context: Context
+            fun setContext(_context: Context){
+                context=_context
+            }
             private var upisani= mutableListOf<Predmet>()
 
             suspend fun getPredmeti():List<Predmet>? {

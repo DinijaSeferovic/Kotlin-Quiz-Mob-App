@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -15,6 +16,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -58,4 +60,8 @@ dependencies {
     testImplementation "io.mockk:mockk:1.10.0"
     implementation 'com.github.wseemann:FFmpegMediaMetadataRetriever-native:1.0.15'
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation("androidx.room:room-runtime:2.3.0")
+    annotationProcessor "androidx.room:room-compiler:2.3.0"
+    implementation("androidx.room:room-ktx:2.3.0")
+    kapt("androidx.room:room-compiler:2.3.0")
 }

@@ -11,18 +11,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rma21projekat">
         <activity android:name=".MainActivity">
-            <intent-filter>
+            <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/plain" />
+            <intent-filter android:label="rma21projekat">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="intent" />
             </intent-filter>
         </activity>
-        <activity android:name=".UpisPredmet"></activity>
+
     </application>
 </manifest>
