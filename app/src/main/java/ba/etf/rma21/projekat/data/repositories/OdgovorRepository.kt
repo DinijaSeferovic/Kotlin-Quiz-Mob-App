@@ -55,7 +55,6 @@ class OdgovorRepository {
 
                 return@withContext bodovi
             }
-
 */
 
         suspend fun predajOdgovore(idKviz: Int) {
